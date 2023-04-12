@@ -33,12 +33,12 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.btn_generate = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.arrivalTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.processTimeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.processBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btn_generate = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.processBindingSource)).BeginInit();
@@ -86,29 +86,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(915, 179);
             this.dataGridView1.TabIndex = 1;
             // 
-            // btn_generate
-            // 
-            this.btn_generate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_generate.Location = new System.Drawing.Point(802, 470);
-            this.btn_generate.Name = "btn_generate";
-            this.btn_generate.Size = new System.Drawing.Size(101, 45);
-            this.btn_generate.TabIndex = 2;
-            this.btn_generate.Text = "Generate";
-            this.btn_generate.UseVisualStyleBackColor = true;
-            this.btn_generate.Click += new System.EventHandler(this.btn_generate_Click);
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "FCFS",
-            "Prememtive SJF",
-            "NonPrememtive SJF"});
-            this.comboBox1.Location = new System.Drawing.Point(731, 415);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 24);
-            this.comboBox1.TabIndex = 3;
-            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "name";
@@ -136,6 +113,29 @@
             // processBindingSource
             // 
             this.processBindingSource.DataSource = typeof(ProjectOS2.Process);
+            // 
+            // btn_generate
+            // 
+            this.btn_generate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_generate.Location = new System.Drawing.Point(802, 470);
+            this.btn_generate.Name = "btn_generate";
+            this.btn_generate.Size = new System.Drawing.Size(101, 45);
+            this.btn_generate.TabIndex = 2;
+            this.btn_generate.Text = "Generate";
+            this.btn_generate.UseVisualStyleBackColor = true;
+            this.btn_generate.Click += new System.EventHandler(this.btn_generate_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "FCFS",
+            "Prememtive SJF",
+            "NonPrememtive SJF"});
+            this.comboBox1.Location = new System.Drawing.Point(731, 415);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 24);
+            this.comboBox1.TabIndex = 3;
             // 
             // Form1
             // 
