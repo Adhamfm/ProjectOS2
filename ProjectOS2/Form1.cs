@@ -27,6 +27,7 @@ namespace ProjectOS2
 
         private void btn_generate_Click(object sender, EventArgs e)
         {
+            
             var objChart = chart.ChartAreas[0];
             objChart.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Auto;
             objChart.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
@@ -53,9 +54,11 @@ namespace ProjectOS2
                 chart.Series["s1"].BorderWidth = 2;
                 chart.Series["s1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.RangeBar;
                 chart.Series["s1"].YValuesPerPoint = 2;
-                // Add Bar
+                // Add Bar start time  - end time
                 int i = chart.Series["s1"].Points.AddXY(xvalue, p.arrivalTime, p.processTime);
                 chart.Series["s1"].Points[i].Label = p.name;
+                if (i == 0)
+                chart.Series["s1"].Points[i].Color = Color.Black;
                 chart.Series["s1"].Points[i].Font = new Font("Arial", 16, FontStyle.Bold);
                 xvalue += -1;
                 await Task.Delay(1000);

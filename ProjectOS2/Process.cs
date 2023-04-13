@@ -13,10 +13,14 @@ namespace ProjectOS2
         public static string schedulerType { get; set; }
         public decimal arrivalTime { get; set; }
         public decimal processTime { get; set; }  
+        public int priority { get; set; }
+       
         public object this[string propertyName]
         {
             get { return this.GetType().GetProperty(propertyName).GetValue(this, null); }
             set {  this.GetType().GetProperty(propertyName).SetValue(this, value, null); }
         }
     }
+
+    
 }
