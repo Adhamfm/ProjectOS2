@@ -54,6 +54,7 @@ namespace ProjectOS2
                 chart.Series["s1"].BorderWidth = 2;
                 chart.Series["s1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.RangeBar;
                 chart.Series["s1"].YValuesPerPoint = 2;
+               
                 // Add Bar start time  - end time
                 int i = chart.Series["s1"].Points.AddXY(xvalue, p.arrivalTime, p.processTime);
                 chart.Series["s1"].Points[i].Label = p.name;

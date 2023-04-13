@@ -10,7 +10,7 @@ namespace ProjectOS2
     {
         public string name { get; set; }
 
-        public static string schedulerType { get; set; }
+       // public static string schedulerType { get; set; }
         public decimal arrivalTime { get; set; }
         public decimal processTime { get; set; }  
         public int priority { get; set; }
