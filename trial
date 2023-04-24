@@ -1,0 +1,266 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Timers;
+
+class ProcessSorted
+{
+    public Process process;
+    public int startTime;
+    public int endTime;
+
+    public ProcessSorted(Process process,int startTime, int endTime)
+    {
+        this.process = process;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+}
+
+class Process
+{
+    /*
+    public Process(string pid, int arrivalTime, int burstTime, 
+        int priority, int waitingTime, int turnaroundTime, int remainingBurstTime)
+    {
+        this.pid = pid;
+        ArrivalTime = arrivalTime;
+        BurstTime = burstTime;
+        Priority = priority;
+        WaitingTime = waitingTime;
+        TurnaroundTime = turnaroundTime;
+        RemainingBurstTime = burstTime;
+    }
+    */
+    public string pid { get; set; }
+    public int ArrivalTime { get; set; }
+    public int BurstTime { get; set; }
+    public int Priority { get; set; }
+    public int WaitingTime { get; set; }
+    public int TurnaroundTime { get; set; }
+    public int RemainingBurstTime { get; set; }    //leeh lazma leeh? 34an msh 3yza a3ml decrement ll burst time when it is essential ll execution
+
+}
+
+class Scheduler
+{
+    public static List<Process> waitingProcesses = new List<Process>();  //list of all processes' objects entered by user
+    private static List<Process> readyProcesses = new List<Process>();   //list of all processes after sorting based on priorities and ready to be executed
+    public static int currentTime;
+    public static int endOfBurst;
+
+    public static void AddProcess(string pid, int arrivalTime, int burstTime, int priority)
+    {
+        waitingProcesses.Add(new Process { pid = pid, ArrivalTime = arrivalTime, BurstTime = burstTime, Priority = priority, RemainingBurstTime = burstTime });
+    }
+    public static List<Process> SortByPriority(List<Process> listOFProcesses)
+    {
+        List<Process> sorted = new List<Process>(listOFProcesses);
+
+        sorted.Sort((p1, p2) =>
+        {
+            if (p1.Priority != p2.Priority && p1.ArrivalTime == p2.ArrivalTime)
+            {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                return p1.Priority.CompareTo(p2.Priority);
+            }
+            else if (p1.Priority == p2.Priority && p1.ArrivalTime == p2.ArrivalTime) //lw 3ndhom nfs el arrival wel priority time w nfs el priority
+            {                                                                   //then compare their pid            
+                return int.Parse(p1.pid.Substring(1)).CompareTo(int.Parse(p2.pid.Substring(1)));
+            }
+            else if (p1.Priority != p2.Priority && p1.ArrivalTime != p2.ArrivalTime && p1.ArrivalTime < p2.ArrivalTime)
+            {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                return p1.ArrivalTime.CompareTo(p2.ArrivalTime);
+            }
+            else if (p1.Priority == p2.Priority && p1.ArrivalTime != p2.ArrivalTime)
+            {
+                return p1.ArrivalTime.CompareTo(p2.ArrivalTime);
+            }
+            else
+            {  //s7 lw 5
+                return p1.Priority.CompareTo(p2.Priority);
+
+            }
+        });
+        return sorted;
+    }
+
+    public static List<Process> SortByArrival(List<Process> listOFProcesses)
+    {
+        List<Process> sorted = new List<Process>(listOFProcesses);
+
+        sorted.Sort((p1, p2) =>
+        {
+            if (p1.Priority != p2.Priority && p1.ArrivalTime == p2.ArrivalTime)
+            {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                return p1.Priority.CompareTo(p2.Priority);
+            }
+            else if (p1.Priority == p2.Priority && p1.ArrivalTime == p2.ArrivalTime) //lw 3ndhom nfs el arrival wel priority time w nfs el priority
+            {                                                                   //then compare their pid            
+                return int.Parse(p1.pid.Substring(1)).CompareTo(int.Parse(p2.pid.Substring(1)));
+            }
+            else if (p1.Priority != p2.Priority && p1.ArrivalTime != p2.ArrivalTime && p1.ArrivalTime < p2.ArrivalTime)
+            {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                return p1.ArrivalTime.CompareTo(p2.ArrivalTime);
+            }
+            else if (p1.Priority == p2.Priority && p1.ArrivalTime != p2.ArrivalTime)
+            {
+                return p1.ArrivalTime.CompareTo(p2.ArrivalTime);
+            }
+            else
+            {  //s7 lw 5
+                return p1.ArrivalTime.CompareTo(p2.ArrivalTime);
+
+            }
+        });
+        return sorted;
+    }
+
+
+
+
+
+
+    public static void RunScheduler()
+    {
+        List<Process> sorted = SortByPriority(waitingProcesses);
+        List<ProcessSorted> processSortedList = new List<ProcessSorted>();
+        Console.WriteLine("sorted processes in waiting list wrt arrial time:");
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            Console.WriteLine($"Executing process {sorted[i].pid} that arrived on {sorted[i].ArrivalTime} with priority {sorted[i].Priority} for {sorted[i].BurstTime} seconds.");
+        }
+
+        //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
+        currentTime = sorted[0].ArrivalTime;   //msh lazm yob2a 0 btw
+
+        Console.WriteLine("currentTime is: " + currentTime);
+        Console.WriteLine("");
+
+        //awl arrived process will always be exuted first b3d kda b2a nshoof n3eed el trteeb w kda
+        readyProcesses.Add(sorted[0]);       //7ttha fel readylist
+        endOfBurst = currentTime + sorted[0].BurstTime;      //hena =8 msln 
+        sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
+                                              //Console.WriteLine(endOfBurst);
+
+        while (sorted.Count > 0 || readyProcesses.Count > 0)
+        {
+            foreach (Process p in readyProcesses)
+                Console.WriteLine("fel ready:" + p.pid);
+            // Check for new arrivals
+            for (int i = 0; i < sorted.Count; i++)
+            {
+                if (sorted[i].ArrivalTime <= endOfBurst)
+                {
+                    sorted = SortByPriority(sorted);
+                    readyProcesses.Add(sorted[i]);       //7ttha fel readylist
+                    sorted.RemoveAt(i);                   //4eltaha mn el sorted list  
+                }
+                else
+                {
+                    sorted = SortByArrival(sorted);
+                    readyProcesses.Add(sorted[i]);       //7ttha fel readylist
+                    sorted.RemoveAt(i);
+                }
+                endOfBurst += sorted[i].BurstTime;
+
+            }
+            // Execute processes in the ready list
+            if (readyProcesses.Count > 0)
+            {
+                //sorted = SortByPriority(sorted);
+                Process runningProcess = readyProcesses[0];
+                processSortedList.Add(new ProcessSorted(runningProcess,currentTime,endOfBurst));
+                while (runningProcess.RemainingBurstTime != 0)
+                {
+                    Console.WriteLine($"Time {currentTime}: Process {runningProcess.pid} is running (burst time = {runningProcess.RemainingBurstTime})");
+                    Thread.Sleep(1000);
+                    runningProcess.RemainingBurstTime--;
+
+                    foreach (Process p in readyProcesses)
+                    {
+                        if (p.ArrivalTime <= endOfBurst)
+                        {
+                            readyProcesses = SortByPriority(readyProcesses);
+                            //readyProcesses.Add(p);       //7ttha fel readylist
+                        }
+                        else
+                        {
+                            readyProcesses = SortByArrival(readyProcesses);
+                            //readyProcesses.Add(p);       //7ttha fel readylist
+                        }
+                    }
+
+                    //sorted = SortByPriority(sorted);
+                    // Check for new arrivals
+                    for (int j = 0; j < sorted.Count; j++)
+                    {
+                        sorted = SortByPriority(sorted);
+                        if (sorted[j].ArrivalTime <= currentTime)
+                        {
+                            readyProcesses.Add(sorted[j]);
+                            sorted.RemoveAt(j);
+                            j--; // Decrement the index to account for the removed element
+                        }
+                    }
+                    // Remove the current process from the ready list if its burst time is complete
+                    if (runningProcess.RemainingBurstTime == 0)
+                    {
+                        int indexToRemove = readyProcesses.IndexOf(runningProcess);
+                        readyProcesses.RemoveAt(indexToRemove);
+                    }
+
+                    // Increment the current time
+                    currentTime++;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Time {currentTime}: CPU is idle");
+                currentTime++;
+                Thread.Sleep(1000); // Wait 1 second to simulate real-time scheduler
+            }
+        }
+    }
+}
+class Program
+{
+    static void Main(string[] args)
+    {
+        // add processes
+        /*
+        Scheduler.AddProcess(pid: "P1", arrivalTime: 2, burstTime: 3, priority: 5);   //6th
+        Scheduler.AddProcess("P2", 1, 2, 3);           //4th
+        Scheduler.AddProcess("P3", 1, 5, 1);        //2nd el mafrood  wel ba2y kolo arrived kman except a5r wa7da
+        Scheduler.AddProcess("P4", 3, 1, 2);       //3rd
+        Scheduler.AddProcess("P5", 6, 6, 4);      //5th
+        Scheduler.AddProcess("P6", 0, 8, 2);   //first
+    */
+        /*
+            Scheduler.AddProcess(pid: "P1", arrivalTime: 2, burstTime: 3, priority: 5);   //5th
+            Scheduler.AddProcess("P2", 1, 2, 2);    //3rd
+        Scheduler.AddProcess("P3", 3, 3, 1);      //second
+        Scheduler.AddProcess("P4", 3, 1, 2);     //4  
+            Scheduler.AddProcess("P5", 0, 5, 2);   //first
+          */
+
+        Scheduler.AddProcess(pid: "P1", arrivalTime: 2, burstTime: 3, priority: 5);   //5th
+        Scheduler.AddProcess("P2", 1, 2, 2);    //2rd
+        Scheduler.AddProcess("P3", 3, 3, 1);      //3
+        Scheduler.AddProcess("P4", 3, 1, 2);     //4  
+        Scheduler.AddProcess("P5", 0, 5, 2);   //first
+
+        /*
+            Scheduler.AddProcess("P4", 2, 4, 4);
+            Scheduler.AddProcess("P6", 4, 6, 2);
+          */
+
+        // run scheduler
+        Scheduler.RunScheduler();
+
+    }
+}
+
+
+
