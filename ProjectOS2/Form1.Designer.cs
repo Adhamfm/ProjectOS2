@@ -46,12 +46,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtConsole = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.rdn_instant = new System.Windows.Forms.RadioButton();
+            this.rdn_live = new System.Windows.Forms.RadioButton();
             this.btn_rmv = new System.Windows.Forms.Button();
+            this.testLabel = new System.Windows.Forms.Label();
+            this.btn_test2 = new System.Windows.Forms.Button();
             this.processBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processPriorityBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.btn_test = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.quantumPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantumInput)).BeginInit();
@@ -206,6 +207,7 @@
             // btn_showform2
             // 
             this.btn_showform2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn_showform2.Enabled = false;
             this.btn_showform2.Location = new System.Drawing.Point(685, 265);
             this.btn_showform2.Name = "btn_showform2";
             this.btn_showform2.Size = new System.Drawing.Size(213, 62);
@@ -246,35 +248,35 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.Color.Orange;
-            this.panel1.Controls.Add(this.radioButton3);
-            this.panel1.Controls.Add(this.radioButton4);
-            this.panel1.Enabled = false;
+            this.panel1.Controls.Add(this.rdn_instant);
+            this.panel1.Controls.Add(this.rdn_live);
             this.panel1.Location = new System.Drawing.Point(931, 265);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(165, 72);
             this.panel1.TabIndex = 24;
             // 
-            // radioButton3
+            // rdn_instant
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(19, 37);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(66, 20);
-            this.radioButton3.TabIndex = 1;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "Instant";
-            this.radioButton3.UseVisualStyleBackColor = true;
+            this.rdn_instant.AutoSize = true;
+            this.rdn_instant.Location = new System.Drawing.Point(19, 37);
+            this.rdn_instant.Name = "rdn_instant";
+            this.rdn_instant.Size = new System.Drawing.Size(66, 20);
+            this.rdn_instant.TabIndex = 1;
+            this.rdn_instant.TabStop = true;
+            this.rdn_instant.Text = "Instant";
+            this.rdn_instant.UseVisualStyleBackColor = true;
             // 
-            // radioButton4
+            // rdn_live
             // 
-            this.radioButton4.AutoSize = true;
-            this.radioButton4.Location = new System.Drawing.Point(19, 11);
-            this.radioButton4.Name = "radioButton4";
-            this.radioButton4.Size = new System.Drawing.Size(53, 20);
-            this.radioButton4.TabIndex = 0;
-            this.radioButton4.TabStop = true;
-            this.radioButton4.Text = "Live";
-            this.radioButton4.UseVisualStyleBackColor = true;
+            this.rdn_live.AutoSize = true;
+            this.rdn_live.Location = new System.Drawing.Point(19, 11);
+            this.rdn_live.Name = "rdn_live";
+            this.rdn_live.Size = new System.Drawing.Size(53, 20);
+            this.rdn_live.TabIndex = 0;
+            this.rdn_live.TabStop = true;
+            this.rdn_live.Text = "Live";
+            this.rdn_live.UseVisualStyleBackColor = true;
+            this.rdn_live.CheckedChanged += new System.EventHandler(this.rdn_live_CheckedChanged);
             // 
             // btn_rmv
             // 
@@ -286,6 +288,25 @@
             this.btn_rmv.UseVisualStyleBackColor = true;
             this.btn_rmv.Click += new System.EventHandler(this.btn_rmv_Click);
             // 
+            // testLabel
+            // 
+            this.testLabel.AutoSize = true;
+            this.testLabel.Location = new System.Drawing.Point(521, 405);
+            this.testLabel.Name = "testLabel";
+            this.testLabel.Size = new System.Drawing.Size(44, 16);
+            this.testLabel.TabIndex = 27;
+            this.testLabel.Text = "label3";
+            // 
+            // btn_test2
+            // 
+            this.btn_test2.Location = new System.Drawing.Point(488, 368);
+            this.btn_test2.Name = "btn_test2";
+            this.btn_test2.Size = new System.Drawing.Size(127, 23);
+            this.btn_test2.TabIndex = 28;
+            this.btn_test2.Text = "PauseTimer";
+            this.btn_test2.UseVisualStyleBackColor = true;
+            this.btn_test2.Click += new System.EventHandler(this.btn_test2_Click);
+            // 
             // processBindingSource
             // 
             this.processBindingSource.DataSource = typeof(ProjectOS2.Process);
@@ -294,22 +315,13 @@
             // 
             this.processPriorityBindingSource.DataSource = typeof(ProjectOS2.ProcessPriority);
             // 
-            // btn_test
-            // 
-            this.btn_test.Location = new System.Drawing.Point(439, 369);
-            this.btn_test.Name = "btn_test";
-            this.btn_test.Size = new System.Drawing.Size(75, 23);
-            this.btn_test.TabIndex = 26;
-            this.btn_test.Text = "Test";
-            this.btn_test.UseVisualStyleBackColor = true;
-            this.btn_test.Click += new System.EventHandler(this.btn_test_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1283, 725);
-            this.Controls.Add(this.btn_test);
+            this.Controls.Add(this.btn_test2);
+            this.Controls.Add(this.testLabel);
             this.Controls.Add(this.btn_rmv);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.txtConsole);
@@ -365,14 +377,15 @@
         private System.Windows.Forms.Button btn_showform2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtConsole;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.Button btn_rmv;
         private System.Windows.Forms.DataGridViewTextBoxColumn Process;
         private System.Windows.Forms.DataGridViewTextBoxColumn ArrivalTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProcessingTime;
-        private System.Windows.Forms.Button btn_test;
+        private System.Windows.Forms.Label testLabel;
+        private System.Windows.Forms.Button btn_test2;
+        public System.Windows.Forms.Panel panel1;
+        public System.Windows.Forms.RadioButton rdn_instant;
+        public System.Windows.Forms.RadioButton rdn_live;
     }
 }
 

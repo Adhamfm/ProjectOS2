@@ -119,6 +119,7 @@ namespace ProjectOS2
           
             }
 
+            btn_showform2.Enabled = true;
             GanttChart(processList, flag);
         }
 
@@ -404,6 +405,7 @@ namespace ProjectOS2
             processBindingSource.DataSource = new List<Process>();
             processPriorityBindingSource.DataSource = new List<Process>();
             chart = frm.chart;
+            
         }
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -475,12 +477,46 @@ namespace ProjectOS2
                 return;
             }
         }
-
-        private void btn_test_Click(object sender, EventArgs e)
+        public int testTimer = 0;
+        public int getTimer()
         {
-            foreach(Process p in sortedList)
+            return testTimer;
+        }
+        public void setTimer(int timer)
+        {
+            testTimer = timer;
+        }
+        bool pause = true;
+        public void setPause()
+        {
+            pause = !pause;
+        }
+        private async void btn_test_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void btn_test2_Click(object sender, EventArgs e)
+        {
+            pause = !pause;
+        }
+
+        private async void rdn_live_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (testTimer != 0) return;
+            testTimer = 0;
+            while (true)
             {
-                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
+                while (pause)
+                {
+                    testTimer++;
+                    comboBox.SuspendLayout();
+                    testLabel.Text = testTimer.ToString();
+                    await Task.Delay(1000);
+                    // comboBox.ResumeLayout();
+                }
+                await Task.Delay(1000);
             }
         }
     }
