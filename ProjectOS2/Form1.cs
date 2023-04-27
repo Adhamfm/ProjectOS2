@@ -865,7 +865,7 @@ namespace ProjectOS2
                         else if (col == 3)
                         {
                             process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            sortedList.Add(process);
+                            processList.Add(process);
                         }
                     }
                 }
@@ -906,12 +906,13 @@ namespace ProjectOS2
             }
             rowsSaved = dataGridView1.RowCount;
             // call scheduler function
-           // TODO call the function... 
-           // New Processes is in **newAddedProcesses**;
-           foreach (Process p in newAddedProcesses)
-            {
-                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.arrivalTime, p.burstTime);
-            }
+            // TODO call the function... 
+            // New Processes is in **newAddedProcesses**;
+            GanttChart(processList, flag);
+            //foreach (Process p in newAddedProcesses)
+            //{
+            //    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.arrivalTime, p.burstTime);
+            //}
         }
     }
 }
