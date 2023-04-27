@@ -217,7 +217,7 @@ namespace ProjectOS2
             {
                 process.RemainingTime = process.burstTime;
             }
-            while (completedProcessCount < processList.Count && anyProcessArrived)
+            while (completedProcessCount < processList.Count)
             {
                 anyProcessArrived = false;
                 foreach (Process process in processList)
