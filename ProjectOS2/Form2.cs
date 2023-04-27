@@ -63,6 +63,7 @@ namespace ProjectOS2
         private async void button2_Click2(object sender, EventArgs e)
         {
             mainForm.setTimer(0);
+            button2.Enabled = false;
             while(true)
             {
                 timer = mainForm.getTimer();
@@ -211,7 +212,7 @@ namespace ProjectOS2
             }
 
             xvalue = 0;
-            await Task.Delay(100);
+            button2.Enabled = true;
 
         }
 
