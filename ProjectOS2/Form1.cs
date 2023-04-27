@@ -399,13 +399,18 @@ namespace ProjectOS2
                 //ascneding order of processes in preready based on their priorities
                 preready.Sort((p1, p2) => p1.priority.CompareTo(p2.priority));
 
-                foreach (Process p in preready)
+                //changes done here
+                for (int j = 0; j < preready.Count; j++)
                 {
-                    sortedList.Add(p);
-                    p.serviceTime = old.burstTime + old.serviceTime;
-                    p.waitingTime = p.serviceTime - p.arrivalTime;
-                    old = p;
-
+                    //Console.WriteLine("inside pre ready b3d el sorting " + preready[j].pid);
+                    sortedList.Add(preready[j]);
+                    preready[j].serviceTime = old.burstTime + old.serviceTime;
+                    preready[j].waitingTime = preready[j].serviceTime - preready[j].arrivalTime;
+                    endOfBurst += sortedList.Last().burstTime;
+                    old = preready[j];
+                    //Console.WriteLine("accumu: " + endOfBurst);
+                    preready.Remove(preready[j]);
+                    j--;
                     for (int i = 0; i < sorted.Count; i++)
                     {
                         if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
@@ -415,8 +420,6 @@ namespace ProjectOS2
                             sorted.Remove(sorted[i]);
                             i--;
                         }
-                        else
-                            continue;
                     }
                     preready.Sort((p1, p2) => p1.priority.CompareTo(p2.priority));
                 }
