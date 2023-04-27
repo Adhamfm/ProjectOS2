@@ -52,6 +52,7 @@ namespace ProjectOS2
         private async void btn_generate_Click(object sender, EventArgs e)
         {
             List<Process> processList = new List<Process>();
+            btn_generate.Enabled = false;
             flag = 0; // Scheduler Type
             int selection = comboBox.SelectedIndex;
             this.Refresh();
