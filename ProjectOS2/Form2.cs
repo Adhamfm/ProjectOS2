@@ -149,6 +149,7 @@ namespace ProjectOS2
 
             // ChartArea chartArea = new ChartArea();
             //chart.ChartAreas.Add(chartArea);
+            mainForm.setGraphRunning(true);
             var objChart = chart.ChartAreas[0];
             // this.Controls.Add(chart);
             objChart.AxisY.Maximum = sortedList.Last().turnaroundTime+2;

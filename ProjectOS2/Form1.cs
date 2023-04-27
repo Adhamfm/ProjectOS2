@@ -22,7 +22,7 @@ namespace ProjectOS2
         public Form1()
         {
             InitializeComponent();
-            
+
 
         }
 
@@ -31,14 +31,28 @@ namespace ProjectOS2
         {
 
         }
+        int rowsSaved = 0;
         private async void btn_add_Click(object sender, EventArgs e) {
+            if (getGraphRunning())
+            {
+                setPause();
+                setGraphRunning(false);
+                rowsSaved = dataGridView1.RowCount;
+                btn_prc_add.Enabled = true;
+                label3.Text = "PAUSED";
+                for (int row = 0; row < dataGridView1.RowCount; row++)
+                {
+                    dataGridView1.Rows[row].ReadOnly = true;
+                }
+            }
             dataGridView1.Rows.Add("P"+counter,0,0);
             counter++;       
         }
+        int flag = 0;
         private async void btn_generate_Click(object sender, EventArgs e)
         {
             List<Process> processList = new List<Process>();
-            int flag = 0; // Scheduler Type
+            flag = 0; // Scheduler Type
             int selection = comboBox.SelectedIndex;
             this.Refresh();
             txtConsole.Clear();
@@ -329,55 +343,7 @@ namespace ProjectOS2
             }
             return sum / processList.Count();
         }
-        public async void drawCharttt(List<Process> sortedList)
-        {
-            // Chart chart = new Chart();
-            // chart.Anchor = AnchorStyles.Left & AnchorStyles.Right & AnchorStyles.Bottom & AnchorStyles.Top;
-            // chart.Dock = DockStyle.Top;
-            //// chart.Width = 1283;
-            // //chart.Height = 541;
-
-            // ChartArea chartArea = new ChartArea();
-            //chart.ChartAreas.Add(chartArea);
-            var objChart = chart.ChartAreas[0];
-            // this.Controls.Add(chart);
-            objChart.AxisY.Minimum = 0;
-            chart.Series.Clear();
-            int start = 0;
-            int end = 0;
-            chart.Series.Add("s1");
-            xvalue = 0;
-            //Style Bar
-            chart.Series["s1"].Color = Color.BlueViolet;
-            //chart.Series["s1"].Legend = "Legend1";
-            //chart.Series["s1"].ChartArea = "ChartArea1";
-            chart.Series["s1"].BorderColor = Color.Black;
-            chart.Series["s1"].BorderWidth = 2;
-            chart.Series["s1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.RangeBar;
-            chart.Series["s1"].YValuesPerPoint = 2;
-
-            foreach (Process p in sortedList)
-            {
-                if (breaker)
-                {
-
-                }
-                // Add Bar start time  - end time
-                if (start < p.arrivalTime)
-                {
-                    start = p.arrivalTime;
-                }
-                end = start + p.burstTime;
-                int i = chart.Series["s1"].Points.AddXY(xvalue, start, end);
-                start = end;
-                chart.Series["s1"].Points[i].Label = p.name;
-                chart.Series["s1"].Points[i].Font = new Font("Arial", 16, FontStyle.Bold);
-                xvalue += -1;
-
-                await Task.Delay(1000);
-            }
-            xvalue = 0;
-        }
+        
         public async void drawChart(List<ProcessSorted> sortedList)
         {
             // Chart chart = new Chart();
@@ -529,7 +495,7 @@ namespace ProjectOS2
 
         private void btn_rmv_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.Rows.Count != 0)
+            if (dataGridView1.Rows.Count != rowsSaved)
             {
                 dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - 1);
                 counter--;
@@ -553,6 +519,15 @@ namespace ProjectOS2
         {
             pause = !pause;
         }
+        bool graphRunning = false;
+        public void setGraphRunning(bool running)
+        {
+            graphRunning = running;
+        }
+        public bool getGraphRunning()
+        {
+            return graphRunning;
+        }
         private async void btn_test_Click(object sender, EventArgs e)
         {
             
@@ -572,6 +547,14 @@ namespace ProjectOS2
             {
                 while (pause)
                 {
+                    if (getGraphRunning())
+                    {
+                       // btn_prc_add.Enabled = true;
+                    }
+                    else
+                    {
+                        btn_prc_add.Enabled = false;
+                    }
                     testTimer++;
                     comboBox.SuspendLayout();
                     testLabel.Text = testTimer.ToString();
@@ -579,6 +562,87 @@ namespace ProjectOS2
                     // comboBox.ResumeLayout();
                 }
                 await Task.Delay(1000);
+            }
+        }
+        List<Process> newAddedProcesses;
+        private void btn_prc_add_Click(object sender, EventArgs e)
+        {
+            newAddedProcesses = new List<Process>();
+            setPause();
+            setGraphRunning(true);
+            btn_prc_add.Enabled=false;
+            label3.Text = " ";
+            // Get new data
+            if (flag == 3 || flag == 4)
+            {
+                for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
+                {
+                    Process process = new Process();
+                    for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                    {
+                        if (dataGridView1.Rows[row].Cells[col].Value == null)
+                        {
+                            MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                            return;
+                        }
+
+                        if (col == 0)
+                        {
+                            process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                        }
+                        else if (col == 1)
+                        {
+                            process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                        }
+                        else if (col == 2)
+                        {
+                            process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                        }
+                        else if (col == 3)
+                        {
+                            process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            newAddedProcesses.Add(process);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
+                {
+                    Process process = new Process();
+                    for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                    {
+                        if (dataGridView1.Rows[row].Cells[col].Value == null)
+                        {
+                            MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                            return;
+                        }
+
+                        if (col == 0)
+                        {
+                            process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                        }
+                        else if (col == 1)
+                        {
+                            process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                        }
+                        else if (col == 2)
+                        {
+                            process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+
+                            newAddedProcesses.Add(process);
+                        }
+                    }
+                }
+            }
+            rowsSaved = dataGridView1.RowCount;
+            // call scheduler function
+           // TODO call the function... 
+           // New Processes is in **newAddedProcesses**;
+           foreach (Process p in newAddedProcesses)
+            {
+                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.arrivalTime, p.burstTime);
             }
         }
     }

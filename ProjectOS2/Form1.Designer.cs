@@ -51,6 +51,8 @@
             this.btn_rmv = new System.Windows.Forms.Button();
             this.testLabel = new System.Windows.Forms.Label();
             this.btn_test2 = new System.Windows.Forms.Button();
+            this.btn_prc_add = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.processBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processPriorityBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -307,6 +309,28 @@
             this.btn_test2.UseVisualStyleBackColor = true;
             this.btn_test2.Click += new System.EventHandler(this.btn_test2_Click);
             // 
+            // btn_prc_add
+            // 
+            this.btn_prc_add.Enabled = false;
+            this.btn_prc_add.Location = new System.Drawing.Point(685, 333);
+            this.btn_prc_add.Name = "btn_prc_add";
+            this.btn_prc_add.Size = new System.Drawing.Size(154, 30);
+            this.btn_prc_add.TabIndex = 29;
+            this.btn_prc_add.Text = "ADD PROCESS";
+            this.btn_prc_add.UseVisualStyleBackColor = true;
+            this.btn_prc_add.Click += new System.EventHandler(this.btn_prc_add_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.Red;
+            this.label3.Location = new System.Drawing.Point(769, 205);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(40, 58);
+            this.label3.TabIndex = 30;
+            this.label3.Text = " ";
+            // 
             // processBindingSource
             // 
             this.processBindingSource.DataSource = typeof(ProjectOS2.Process);
@@ -320,6 +344,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1283, 725);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.btn_prc_add);
             this.Controls.Add(this.btn_test2);
             this.Controls.Add(this.testLabel);
             this.Controls.Add(this.btn_rmv);
@@ -386,6 +412,8 @@
         public System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.RadioButton rdn_instant;
         public System.Windows.Forms.RadioButton rdn_live;
+        private System.Windows.Forms.Button btn_prc_add;
+        private System.Windows.Forms.Label label3;
     }
 }
 
