@@ -190,10 +190,58 @@ namespace ProjectOS2
         {
             //TODO
         }
+       // this section is for preemp priority
         private void PremPriority(List<Process> processList)
         {
-            //TODO
+            int currentTime = 0;
+            int completedProcessCount = 0;
+            int highestProrityindex = -1;
+            int highestPriority = int.MaxValue;
+            sortedList = new List<Process>();
+            foreach (Process process in processList)
+            {
+                process.RemainingTime = process.burstTime;
+            }
+            while(completedProcessCount < processList.Count)
+            {
+                for(int i = 0; i < processList.Count; i++)
+                {
+                    if (processList[i].arrivalTime <= currentTime && processList[i].RemainingTime > 0 && processList[i].priority < highestPriority)
+                    {
+                        sortedList.Add(processList[i]);
+                        highestProrityindex = i;
+                        highestPriority = processList[i].priority;
+                    }
+                }
+                if(highestProrityindex == -1)
+                {
+                    currentTime++;
+                }
+                else
+                {
+                    Process currentProcess = processList[highestProrityindex];
+                    currentProcess.RemainingTime--;
+                    currentTime++;
+
+                    if(currentProcess.RemainingTime == 0)
+                    {
+                        completedProcessCount++;
+                        currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
+                        currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+                        highestProrityindex = -1;
+                        highestPriority = int.MaxValue;
+                    }
+                }
+            }
+            Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+            foreach (Process p in processList)
+            {
+                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
+            }
+            Console.WriteLine();
+            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
         }
+        // end of the section
         private void NonPremPriority(List<Process> processList)
         {
             //TODO
