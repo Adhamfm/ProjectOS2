@@ -45,9 +45,10 @@ namespace ProjectOS2
             counter++;
         }
         int flag = 0;
+        List<Process> processList;
         private async void btn_generate_Click(object sender, EventArgs e)
         {
-            List<Process> processList = new List<Process>();
+            processList = new List<Process>();
             btn_generate.Enabled = false;
             flag = 0; // Scheduler Type
             int selection = comboBox.SelectedIndex;
@@ -682,85 +683,8 @@ namespace ProjectOS2
             return sum / processList.Count();
         }
         
-        public async void drawChart(List<ProcessSorted> sortedList)
-        {
-            // Chart chart = new Chart();
-            // chart.Anchor = AnchorStyles.Left & AnchorStyles.Right & AnchorStyles.Bottom & AnchorStyles.Top;
-            // chart.Dock = DockStyle.Top;
-            //// chart.Width = 1283;
-            // //chart.Height = 541;
-
-            // ChartArea chartArea = new ChartArea();
-            //chart.ChartAreas.Add(chartArea);
-            var objChart = chart.ChartAreas[0];
-            // this.Controls.Add(chart);
-            objChart.AxisY.Minimum = 0;
-            chart.Series.Clear();
-            int start = 0;
-            int end = 0;
-            chart.Series.Add("s1");
-            xvalue = 0;
-            //Style Bar
-            chart.Series["s1"].Color = Color.BlueViolet;
-            //chart.Series["s1"].Legend = "Legend1";
-            //chart.Series["s1"].ChartArea = "ChartArea1";
-            chart.Series["s1"].BorderColor = Color.Black;
-            chart.Series["s1"].BorderWidth = 2;
-            chart.Series["s1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.RangeBar;
-            chart.Series["s1"].YValuesPerPoint = 2;
-
-            foreach (ProcessSorted p in sortedList)
-            {
-                if (breaker)
-                {
-
-                }
-                // Add Bar start time  - end time
-                if (start < p.startTime)
-                {
-                    start = p.startTime;
-                }
-                end = start + p.endTime;
-                int i = chart.Series["s1"].Points.AddXY(xvalue, start, end);
-                start = end;
-                chart.Series["s1"].Points[i].Label = p.process.name;
-                chart.Series["s1"].Points[i].Font = new Font("Arial", 16, FontStyle.Bold);
-                xvalue += -1;
-                
-                await Task.Delay(1000);
-            }
-            xvalue = 0;
-        }
-        /*private async void testChart(List<Process> processList)
-        {
-           // processBindingSource.DataSource = null;
-            chart.Series.Add("s1");
-            xvalue = 0;
-            //Style Bar
-            chart.Series["s1"].Color = Color.BlueViolet;
-            chart.Series["s1"].Legend = "Legend1";
-            chart.Series["s1"].ChartArea = "ChartArea1";
-            chart.Series["s1"].BorderColor = Color.Black;
-            chart.Series["s1"].BorderWidth = 2;
-            chart.Series["s1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.RangeBar;
-            chart.Series["s1"].YValuesPerPoint = 2;                                                                                   
-            foreach (Process p in processList)
-            {
-                //chart.Series["s1"].Color = Color.FromArgb(random.Next(256), random.Next(256), random.Next(256));
-                
-               
-                // Add Bar start time  - end time
-                int i = chart.Series["s1"].Points.AddXY(xvalue, p.arrivalTime, p.processTime);
-                chart.Series["s1"].Points[i].Label = p.name;
-                //if (i == 0)
-                //chart.Series["s1"].Points[i].Color = Color.Black;
-                chart.Series["s1"].Points[i].Font = new Font("Arial", 16, FontStyle.Bold);
-                xvalue += -1;
-                await Task.Delay(5000);
-            }
-            xvalue = 0;
-            processBindingSource.DataSource = new List<Process>();
-        }*/
+       
+        
         private void Form1_Load(object sender, EventArgs e)
         {
             TextBoxWriter writer = new TextBoxWriter(txtConsole);
@@ -871,7 +795,11 @@ namespace ProjectOS2
 
         private void btn_test2_Click(object sender, EventArgs e)
         {
-            pause = !pause;
+            Process newpo = new Process();
+            newpo.name = "TEST";
+            newpo.serviceTime = 6;
+            newpo.turnaroundTime = 12;
+            sortedList.Add(newpo);
         }
 
         private async void rdn_live_CheckedChanged(object sender, EventArgs e)
@@ -937,7 +865,7 @@ namespace ProjectOS2
                         else if (col == 3)
                         {
                             process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            newAddedProcesses.Add(process);
+                            sortedList.Add(process);
                         }
                     }
                 }
@@ -967,7 +895,7 @@ namespace ProjectOS2
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
 
-                            newAddedProcesses.Add(process);
+                            processList.Add(process);
                         }
                     }
                 }

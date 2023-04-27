@@ -152,7 +152,7 @@ namespace ProjectOS2
             mainForm.setGraphRunning(true);
             var objChart = chart.ChartAreas[0];
             // this.Controls.Add(chart);
-            objChart.AxisY.Maximum = sortedList.Last().turnaroundTime+2;
+            objChart.AxisY.Maximum = sortedList.Last().turnaroundTime+10;
             chart.Series.Clear();
             int start = 0;
             int end = 0;
@@ -167,11 +167,13 @@ namespace ProjectOS2
             chart.Series["s1"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.RangeBar;
             chart.Series["s1"].YValuesPerPoint = 2;
             Random random = new Random();
-            
 
-            foreach (Process p in sortedList)
+            int item = 0;
+            while (item < sortedList.Count) 
             {
+                Process p = sortedList[item];
                 int x = p.serviceTime;
+
                 int prevCounter = -1;
                 Color color = Color.FromArgb(random.Next(256), random.Next(256), random.Next(256));
                 // Add Bar start time  - end time
@@ -205,9 +207,12 @@ namespace ProjectOS2
                 xvalue += -1;
 
                 //await Task.Delay(1000);
+                item++;
             }
 
             xvalue = 0;
+            await Task.Delay(100);
+
         }
 
         private void button3_Click(object sender, EventArgs e)
