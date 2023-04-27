@@ -325,75 +325,7 @@ namespace ProjectOS2
             Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
         
     }
-        private void NonPremSJF(List<Process> processList)
-        {
-            //TODO
-        }
-        // this section is for preemp priority
-        private void PremPriority(List<Process> processList)
-        {
-            int currentTime = 0;
-            int completedProcessCount = 0;
-            bool anyProcessArrived = true;
-            Process currentProcess = null;
-            sortedList = new List<Process>();
-            foreach (Process process in processList)
-            {
-                process.RemainingTime = process.burstTime;
-            }
-            while (completedProcessCount < processList.Count && anyProcessArrived)
-            {
-                anyProcessArrived = false;
-                foreach (Process process in processList)
-                {
-                    if (process.arrivalTime <= currentTime)
-                    {
-                        anyProcessArrived = true;
-                        if ((currentProcess == null || process.priority < currentProcess.priority) && process.RemainingTime > 0)
-                        {
-                            if (currentProcess != null)
-                            {
-                                Process temp = new Process();
-                                currentProcess.turnaroundTime = currentTime;
-                                temp.name = currentProcess.name;
-                                temp.serviceTime = currentProcess.serviceTime;
-                                temp.turnaroundTime = currentProcess.turnaroundTime;
-                                sortedList.Add(temp);
-                            }
-                            currentProcess = process;
-                            currentProcess.serviceTime = currentTime;
-                        }
-                    }
-                }
-                if (!anyProcessArrived)
-                {
-                    currentTime++;
-                    continue;
-                }
-                currentProcess.RemainingTime--;
-                currentTime++;
-                if (currentProcess.RemainingTime == 0)
-                {
-                    Process temp = new Process();
-                    currentProcess.turnaroundTime = currentTime;
-                    temp.name = currentProcess.name;
-                    temp.serviceTime = currentProcess.serviceTime;
-                    temp.turnaroundTime = currentProcess.turnaroundTime;
-                    sortedList.Add(temp);
-                    completedProcessCount++;
-                    currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
-                    currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
-                    currentProcess = null;
-                }
-            }
-            Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-            foreach (Process p in processList)
-            {
-                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
-            }
-            Console.WriteLine();
-            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
-        }
+       
         // end of the section
 
         //non preemp prio
