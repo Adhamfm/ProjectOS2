@@ -637,6 +637,10 @@ namespace ProjectOS2
                     }
                 }
             }
+            for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
+            {
+                dataGridView1.Rows[row].ReadOnly = true;
+            }
             rowsSaved = dataGridView1.RowCount;
             // call scheduler function
            // TODO call the function... 
