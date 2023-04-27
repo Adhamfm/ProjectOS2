@@ -195,7 +195,8 @@ namespace ProjectOS2
                     Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
                 }
                 Console.WriteLine();
-                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
+                Console.WriteLine("\nAverage Waiting time: {0}", avgWaitingTime(sortedList));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(sortedList));
             }
             else // Function called more than once (FOR LIVE ADDING)
             {
@@ -258,6 +259,7 @@ namespace ProjectOS2
                 }
                 Console.WriteLine();
                 Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(sortedList));
             }
 
         }
@@ -752,9 +754,18 @@ namespace ProjectOS2
             }
             return sum / processList.Count();
         }
-        
-       
-        
+        public static double avgTurnAroundTime(List<Process> processList)
+        {
+            double sum = 0;
+            foreach (Process process in processList)
+            {
+                sum += process.turnaroundTime;
+            }
+            return sum / processList.Count();
+        }
+
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             TextBoxWriter writer = new TextBoxWriter(txtConsole);
