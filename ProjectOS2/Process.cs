@@ -19,6 +19,7 @@ namespace ProjectOS2
         public int waitingTime { get; set; }
         public int serviceTime { get; set; } //todo change to startTime
         public int turnaroundTime { get; set; }
+        public int RemainingTime { get; set; } //For priority scheduling
         /*
         public string pid { get; set; }
         public int ArrivalTime { get; set; }
