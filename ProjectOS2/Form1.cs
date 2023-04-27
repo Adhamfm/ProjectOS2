@@ -195,42 +195,56 @@ namespace ProjectOS2
         {
             int currentTime = 0;
             int completedProcessCount = 0;
-            int highestProrityindex = -1;
-            int highestPriority = int.MaxValue;
+            bool anyProcessArrived = true;
+            Process currentProcess = null;
             sortedList = new List<Process>();
             foreach (Process process in processList)
             {
                 process.RemainingTime = process.burstTime;
             }
-            while(completedProcessCount < processList.Count)
+            while (completedProcessCount < processList.Count && anyProcessArrived)
             {
-                for(int i = 0; i < processList.Count; i++)
+                anyProcessArrived = false;
+                foreach (Process process in processList)
                 {
-                    if (processList[i].arrivalTime <= currentTime && processList[i].RemainingTime > 0 && processList[i].priority < highestPriority)
+                    if (process.arrivalTime <= currentTime)
                     {
-                        sortedList.Add(processList[i]);
-                        highestProrityindex = i;
-                        highestPriority = processList[i].priority;
+                        anyProcessArrived = true;
+                        if ((currentProcess == null || process.priority < currentProcess.priority) && process.RemainingTime > 0)
+                        {
+                            if (currentProcess != null)
+                            {
+                                Process temp = new Process();
+                                currentProcess.turnaroundTime = currentTime;
+                                temp.name = currentProcess.name;
+                                temp.serviceTime = currentProcess.serviceTime;
+                                temp.turnaroundTime = currentProcess.turnaroundTime;
+                                sortedList.Add(temp);
+                            }
+                            currentProcess = process;
+                            currentProcess.serviceTime = currentTime;
+                        }
                     }
                 }
-                if(highestProrityindex == -1)
+                if (!anyProcessArrived)
                 {
                     currentTime++;
+                    continue;
                 }
-                else
+                currentProcess.RemainingTime--;
+                currentTime++;
+                if (currentProcess.RemainingTime == 0)
                 {
-                    Process currentProcess = processList[highestProrityindex];
-                    currentProcess.RemainingTime--;
-                    currentTime++;
-
-                    if(currentProcess.RemainingTime == 0)
-                    {
-                        completedProcessCount++;
-                        currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
-                        currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
-                        highestProrityindex = -1;
-                        highestPriority = int.MaxValue;
-                    }
+                    Process temp = new Process();
+                    currentProcess.turnaroundTime = currentTime;
+                    temp.name = currentProcess.name;
+                    temp.serviceTime = currentProcess.serviceTime;
+                    temp.turnaroundTime = currentProcess.turnaroundTime;
+                    sortedList.Add(temp);
+                    completedProcessCount++;
+                    currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
+                    currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+                    currentProcess = null;
                 }
             }
             Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
