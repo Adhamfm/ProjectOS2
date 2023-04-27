@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,11 +22,7 @@ namespace ProjectOS2
         public Form1()
         {
             InitializeComponent();
-
-
         }
-
-
         private void chart1_Click(object sender, EventArgs e)
         {
 
@@ -45,8 +41,8 @@ namespace ProjectOS2
                     dataGridView1.Rows[row].ReadOnly = true;
                 }
             }
-            dataGridView1.Rows.Add("P"+counter,0,0);
-            counter++;       
+            dataGridView1.Rows.Add("P" + counter, 0, 0);
+            counter++;
         }
         int flag = 0;
         private async void btn_generate_Click(object sender, EventArgs e)
@@ -69,7 +65,7 @@ namespace ProjectOS2
 
             // Read data from DataGridView
 
-            if(flag == 3 || flag == 4)
+            if (flag == 3 || flag == 4)
             {
                 for (int row = 0; row < dataGridView1.RowCount; row++)
                 {
@@ -106,7 +102,7 @@ namespace ProjectOS2
             {
                 for (int row = 0; row < dataGridView1.RowCount; row++)
                 {
-                        Process process = new Process();
+                    Process process = new Process();
                     for (int col = 0; col < dataGridView1.ColumnCount; col++)
                     {
                         if (dataGridView1.Rows[row].Cells[col].Value == null)
@@ -130,14 +126,11 @@ namespace ProjectOS2
                             processList.Add(process);
                         }
                     }
-                }                
-          
+                }
             }
-
             btn_showform2.Enabled = true;
             GanttChart(processList, flag);
         }
-
         private void GanttChart(List<Process> processList, int choice)
         {
             switch (choice)
@@ -165,7 +158,7 @@ namespace ProjectOS2
         public List<Process> sortedList;
         public List<Process> SortedList()
         {
-           return sortedList;
+            return sortedList;
         }
         private void FCFS(List<Process> processList)
         {
@@ -175,7 +168,7 @@ namespace ProjectOS2
             sortedList[0].waitingTime = 0;
             prev = sortedList[0];
             // Calculate waiting time
-            foreach(Process p in sortedList.Skip(1))
+            foreach (Process p in sortedList.Skip(1))
             {
                 p.serviceTime = prev.burstTime + prev.serviceTime;
                 p.waitingTime = p.serviceTime - p.arrivalTime;
@@ -183,7 +176,7 @@ namespace ProjectOS2
                 prev = p;
             }
 
-            foreach(Process p in sortedList)
+            foreach (Process p in sortedList)
             {
                 p.turnaroundTime = p.burstTime + p.serviceTime;
             }
@@ -205,7 +198,7 @@ namespace ProjectOS2
         {
             //TODO
         }
-       // this section is for preemp priority
+        // this section is for preemp priority
         private void PremPriority(List<Process> processList)
         {
             int currentTime = 0;
@@ -217,7 +210,7 @@ namespace ProjectOS2
             {
                 process.RemainingTime = process.burstTime;
             }
-            while (completedProcessCount < processList.Count)
+            while (completedProcessCount < processList.Count && anyProcessArrived)
             {
                 anyProcessArrived = false;
                 foreach (Process process in processList)
@@ -271,9 +264,120 @@ namespace ProjectOS2
             Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
         }
         // end of the section
+
+        //non preemp prio
+        public static List<Process> sorted = new List<Process>();
+        public static List<Process> preready = new List<Process>();
+        public static int currentTime;
+        public static int endOfBurst;
+        public static List<Process> SortByArrival(List<Process> listOFProcesses)
+        {
+            List<Process> sorted = new List<Process>(listOFProcesses);
+            sorted.Sort((p1, p2) =>
+            {
+                if (p1.priority != p2.priority && p1.arrivalTime == p2.arrivalTime)
+                {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                    return p1.priority.CompareTo(p2.priority);
+                }
+                else if (p1.priority == p2.priority && p1.arrivalTime == p2.arrivalTime) //lw 3ndhom nfs el arrival wel priority time w nfs el priority
+                {                                                                   //then compare their pid            
+                    return int.Parse(p1.name.Substring(1)).CompareTo(int.Parse(p2.name.Substring(1)));
+                }
+                else if (p1.priority != p2.priority && p1.arrivalTime != p2.arrivalTime)
+                {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                    return p1.arrivalTime.CompareTo(p2.arrivalTime);
+                }
+                else if (p1.priority == p2.priority && p1.arrivalTime != p2.arrivalTime)
+                {
+                    return p1.arrivalTime.CompareTo(p2.arrivalTime);
+                }
+                else
+                {  
+                    return p1.arrivalTime.CompareTo(p2.arrivalTime);
+                }
+            });
+            return sorted;
+        }
         private void NonPremPriority(List<Process> processList)
         {
-            //TODO
+            foreach (Process process in processList)
+            {
+                process.RemainingTime = process.burstTime;
+            }
+            sorted = SortByArrival(processList);
+            //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
+            sortedList = new List<Process>();
+
+            //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
+            sortedList.Add(sorted[0]);       //7ttha fel readylist
+            Process old = new Process();
+            old = sortedList[0];
+
+            sorted[0].serviceTime = sorted[0].arrivalTime;    //1
+            endOfBurst = old.serviceTime + old.burstTime;      //hena =7 msln 
+            sorted[0].waitingTime = 0;
+            //sorted[0].turnaroundTime = endOfBurst - old.serviceTime;
+            sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
+
+            while (sorted.Count > 0)
+            {
+                for (int i = 0; i < sorted.Count; i++)
+                {
+                    if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
+                    {
+                        //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
+                        preready.Add(sorted[i]);
+                        sorted.Remove(sorted[i]);
+                        i--;
+                    }
+                    else
+                        continue;
+                }
+                //ascneding order of processes in preready based on their priorities
+                preready.Sort((p1, p2) => p1.priority.CompareTo(p2.priority));
+
+                foreach (Process p in preready)
+                {
+                    sortedList.Add(p);
+                    p.serviceTime = old.burstTime + old.serviceTime;
+                    p.waitingTime = p.serviceTime - p.arrivalTime;
+                    old = p;
+
+                    for (int i = 0; i < sorted.Count; i++)
+                    {
+                        if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
+                        {
+                            //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
+                            preready.Add(sorted[i]);
+                            sorted.Remove(sorted[i]);
+                            i--;
+                        }
+                        else
+                            continue;
+                    }
+                    preready.Sort((p1, p2) => p1.priority.CompareTo(p2.priority));
+                }
+                foreach (Process p in sortedList)
+                {
+                    p.turnaroundTime = p.burstTime + p.serviceTime;
+                }
+
+                // Execute processes in the sortedList
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                Process runningProcess = new Process();
+                foreach (Process p in sortedList)
+                {
+                    runningProcess = p;
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime - p.arrivalTime);
+                    while (p.RemainingTime != 0)
+                    {
+                        runningProcess.RemainingTime--;
+                    }
+                    runningProcess = null;
+                }
+
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+            }
         }
         private void RoundRobin(List<Process> processList)
         {
@@ -434,9 +538,7 @@ namespace ProjectOS2
             processBindingSource.DataSource = new List<Process>();
             processPriorityBindingSource.DataSource = new List<Process>();
             chart = frm.chart;
-            
         }
-
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             
