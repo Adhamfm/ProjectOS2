@@ -90,6 +90,7 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            process.RemainingTime = process.burstTime;
                         }
                         else if (col == 3)
                         {
@@ -123,7 +124,7 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-
+                            process.RemainingTime = process.burstTime;
                             processList.Add(process);
                         }
                     }
@@ -161,35 +162,104 @@ namespace ProjectOS2
         {
             return sortedList;
         }
+        int fcfs_counter = 0;
         private void FCFS(List<Process> processList)
         {
-            Process prev = new Process();
-            sortedList = processList.OrderBy(p => p.arrivalTime).ThenBy(p => p.burstTime).ToList();
-            sortedList[0].serviceTime = sortedList[0].arrivalTime;
-            sortedList[0].waitingTime = 0;
-            prev = sortedList[0];
-            // Calculate waiting time
-            foreach (Process p in sortedList.Skip(1))
+            fcfs_counter++;
+            if (fcfs_counter == 1)
             {
-                p.serviceTime = prev.burstTime + prev.serviceTime;
-                p.waitingTime = p.serviceTime - p.arrivalTime;
-                if (p.waitingTime < 0) p.waitingTime = 0;
-                prev = p;
+
+                Process prev = new Process();
+                sortedList = processList.OrderBy(p => p.arrivalTime).ThenBy(p => p.burstTime).ToList();
+                sortedList[0].serviceTime = sortedList[0].arrivalTime;
+                sortedList[0].waitingTime = 0;
+                prev = sortedList[0];
+                // Calculate waiting time
+                foreach (Process p in sortedList.Skip(1))
+                {
+                    p.serviceTime = prev.burstTime + prev.serviceTime;
+                    p.waitingTime = p.serviceTime - p.arrivalTime;
+                    if (p.waitingTime < 0) p.waitingTime = 0;
+                    prev = p;
+                }
+
+                foreach (Process p in sortedList)
+                {
+                    p.turnaroundTime = p.burstTime + p.serviceTime;
+                }
+
+                //Write in console
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                foreach (Process p in sortedList)
+                {
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
+                }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
+            }
+            else // Function called more than once (FOR LIVE ADDING)
+            {
+                Process prev = new Process();
+                int criticalIndex=0;
+                int listCount = sortedList.Count;
+                //Add new processes to sorted list
+                foreach(Process p in newAddedProcesses)
+                {
+                    List<Process> test = sortedList;
+                    for (int i=0; i<sortedList.Count; i++)
+                    {
+                        if(sortedList[i].arrivalTime == p.arrivalTime)
+                        {
+                            if(sortedList[i].burstTime > p.burstTime)
+                            {
+                                sortedList.Insert(i , p);
+                                criticalIndex = i;
+                            }
+                            else
+                            {
+                                sortedList.Insert(i, p);
+                                criticalIndex = i;
+                            }
+                            break;
+                        } 
+                        else if (sortedList[i].arrivalTime > p.arrivalTime)
+                        {
+                            sortedList.Insert(i, p);
+                            criticalIndex = i;
+                            break;
+                        }
+                    }
+                    if (listCount == sortedList.Count)
+                    {
+                        sortedList.Add(p);
+                        criticalIndex = listCount;
+                    }
+                    p.serviceTime = sortedList[criticalIndex-1].turnaroundTime;
+                    p.waitingTime = p.serviceTime - p.arrivalTime;
+                }
+                prev = sortedList[criticalIndex];
+                foreach (Process p in sortedList.Skip(criticalIndex+1))
+                {
+                    p.serviceTime = prev.burstTime + prev.serviceTime;
+                    p.waitingTime = p.serviceTime - p.arrivalTime;
+                    if (p.waitingTime < 0) p.waitingTime = 0;
+                    prev = p;
+                }
+                foreach (Process p in sortedList.Skip(criticalIndex))
+                {
+                    p.turnaroundTime = p.burstTime + p.serviceTime;
+                }
+                //txtConsole.Clear();
+                Console.WriteLine("AFTER ADDING PROCESS");
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\tService Time\n");
+                foreach (Process p in sortedList)
+                {
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3}", p.name, p.waitingTime, p.turnaroundTime,p.serviceTime);
+                }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
             }
 
-            foreach (Process p in sortedList)
-            {
-                p.turnaroundTime = p.burstTime + p.serviceTime;
-            }
-
-            //Write in console
-            Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-            foreach (Process p in sortedList)
-            {
-                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
-            }
-            Console.WriteLine();
-            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
         }
         private void PremSJF(List<Process> processList)
         {
@@ -268,9 +338,9 @@ namespace ProjectOS2
             bool anyProcessArrived = true;
             Process currentProcess = null;
             sortedList = new List<Process>();
-            foreach (Process process in processList)
+            foreach(Process p in processList)
             {
-                process.RemainingTime = process.burstTime;
+                p.RemainingTime = p.burstTime;
             }
             while (completedProcessCount < processList.Count)
             {
@@ -795,11 +865,7 @@ namespace ProjectOS2
 
         private void btn_test2_Click(object sender, EventArgs e)
         {
-            Process newpo = new Process();
-            newpo.name = "TEST";
-            newpo.serviceTime = 6;
-            newpo.turnaroundTime = 12;
-            sortedList.Add(newpo);
+
         }
 
         private async void rdn_live_CheckedChanged(object sender, EventArgs e)
@@ -861,10 +927,12 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            process.RemainingTime = process.burstTime; // For Prem
                         }
                         else if (col == 3)
                         {
                             process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            newAddedProcesses.Add(process);
                             processList.Add(process);
                         }
                     }
@@ -894,7 +962,8 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-
+                            process.RemainingTime = process.burstTime; // For Prem
+                            newAddedProcesses.Add(process);
                             processList.Add(process);
                         }
                     }
@@ -913,6 +982,12 @@ namespace ProjectOS2
             //{
             //    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.arrivalTime, p.burstTime);
             //}
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+            Environment.Exit(0);
         }
     }
 }

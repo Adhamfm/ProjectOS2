@@ -50,11 +50,11 @@
             this.rdn_live = new System.Windows.Forms.RadioButton();
             this.btn_rmv = new System.Windows.Forms.Button();
             this.testLabel = new System.Windows.Forms.Label();
-            this.btn_test2 = new System.Windows.Forms.Button();
             this.btn_prc_add = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.processBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processPriorityBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.quantumPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantumInput)).BeginInit();
@@ -299,16 +299,6 @@
             this.testLabel.TabIndex = 27;
             this.testLabel.Text = "label3";
             // 
-            // btn_test2
-            // 
-            this.btn_test2.Location = new System.Drawing.Point(488, 368);
-            this.btn_test2.Name = "btn_test2";
-            this.btn_test2.Size = new System.Drawing.Size(127, 23);
-            this.btn_test2.TabIndex = 28;
-            this.btn_test2.Text = "PauseTimer";
-            this.btn_test2.UseVisualStyleBackColor = true;
-            this.btn_test2.Click += new System.EventHandler(this.btn_test2_Click);
-            // 
             // btn_prc_add
             // 
             this.btn_prc_add.Enabled = false;
@@ -327,7 +317,7 @@
             this.label3.ForeColor = System.Drawing.Color.Red;
             this.label3.Location = new System.Drawing.Point(769, 205);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 58);
+            this.label3.Size = new System.Drawing.Size(32, 46);
             this.label3.TabIndex = 30;
             this.label3.Text = " ";
             // 
@@ -339,14 +329,27 @@
             // 
             this.processPriorityBindingSource.DataSource = typeof(ProjectOS2.ProcessPriority);
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.BackColor = System.Drawing.Color.Lime;
+            this.button1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.button1.Location = new System.Drawing.Point(1199, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(72, 58);
+            this.button1.TabIndex = 31;
+            this.button1.Text = "RESET";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1283, 725);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btn_prc_add);
-            this.Controls.Add(this.btn_test2);
             this.Controls.Add(this.testLabel);
             this.Controls.Add(this.btn_rmv);
             this.Controls.Add(this.panel1);
@@ -408,12 +411,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ArrivalTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProcessingTime;
         private System.Windows.Forms.Label testLabel;
-        private System.Windows.Forms.Button btn_test2;
         public System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.RadioButton rdn_instant;
         public System.Windows.Forms.RadioButton rdn_live;
         private System.Windows.Forms.Button btn_prc_add;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button1;
     }
 }
 
