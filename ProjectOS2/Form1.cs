@@ -346,6 +346,137 @@ namespace ProjectOS2
         private void NonPremSJF(List<Process> processList)
         {
             //TODO
+            nonPreemSJF_counter++;                 //to determine the number of times we call the function
+
+            //when the function run for the first time
+            if (nonPreemSJF_counter == 1)
+            {
+                            
+                int min_duration = int.MaxValue;    //to include the minimum burst time in the list 
+                Process shortest_process = null;    //to include the shortest process in the list
+                int current_time = 0;
+                sortedList = new List<Process>();
+
+                //assign the processlist to a new list to save it for the second call
+                foreach (Process p in processList)
+                {
+                    Process process = new Process();
+                    process.name = p.name;
+                    process.burstTime = p.burstTime;
+                    process.arrivalTime = p.arrivalTime;
+                    save_list.Add(process);
+                }
+
+                //loop over the list to find the process with the shortest job 
+                //make sure that the arrival time is smaller than or equal to the current time 
+                //the list must not be empty
+                while (processList.Count > 0)
+                {
+
+                    shortest_process = null;
+                    min_duration = int.MaxValue;
+
+                    //find the process with the shortest job time
+                    foreach (Process p in processList)
+                    {
+                        if ((p.burstTime < min_duration) && (p.arrivalTime <= current_time))
+                        {
+                            shortest_process = p;
+                            min_duration = p.burstTime;
+                        }
+                    }
+
+                    //calculate waiting time, service time and turnaround time
+                    shortest_process.serviceTime = current_time;
+                    shortest_process.waitingTime = shortest_process.serviceTime - shortest_process.arrivalTime;
+                    shortest_process.turnaroundTime = shortest_process.serviceTime + shortest_process.burstTime;
+
+                    //add the shortest process to the sorted list and remove it from the unsorted list
+                    sortedList.Add(shortest_process);
+                    processList.Remove(shortest_process);
+
+
+
+
+                    //update the current time
+                    current_time = current_time + shortest_process.burstTime;
+
+                }
+
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\tService Time\n");
+                foreach (Process p in sortedList)
+                {
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3}", p.name, p.waitingTime, p.turnaroundTime, p.serviceTime);
+                }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
+
+            }
+            else // if we add a new process to the live graph
+            {
+                nonPreemSJF_counter++;              //to determine the number of times we call the function
+                int min_duration = int.MaxValue;    //to include the minimum burst time in the list 
+                Process shortest_process = null;    //to include the shortest process in the list
+                int current_time = 0;
+                sortedList.Clear();                 //clear the previous sorted list
+
+                //add the new process to the saved list
+                foreach (Process p in processList)
+                {
+                    Process process = new Process();
+                    process.name = p.name;
+                    process.burstTime = p.burstTime;
+                    process.arrivalTime = p.arrivalTime;
+                    save_list.Add(process);
+                }
+
+                
+
+                //apply the algorithm on the saved list
+                //loop over the list to find the process with the shortest job 
+                //make sure that the arrival time is smaller than or equal to the current time 
+                //the list must not be empty
+                while (save_list.Count > 0)
+                {
+
+                    shortest_process = null;
+                    min_duration = int.MaxValue;
+
+                    //find the process with the shortest job time
+                    foreach (Process p in save_list)
+                    {
+                        if ((p.burstTime < min_duration) && (p.arrivalTime <= current_time))
+                        {
+                            shortest_process = p;
+                            min_duration = p.burstTime;
+                        }
+                    }
+
+                    //calculate waiting time, service time and turnaround time
+                    shortest_process.serviceTime = current_time;
+                    shortest_process.waitingTime = shortest_process.serviceTime - shortest_process.arrivalTime;
+                    shortest_process.turnaroundTime = shortest_process.serviceTime + shortest_process.burstTime;
+
+                    //add the shortest process to the sorted list and remove it from the unsorted list
+                    sortedList.Add(shortest_process);
+                    save_list.Remove(shortest_process);
+
+
+
+
+                    //update the current time
+                    current_time = current_time + shortest_process.burstTime;
+
+                }
+
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\tService Time\n");
+                foreach (Process p in sortedList)
+                {
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3}", p.name, p.waitingTime, p.turnaroundTime, p.serviceTime);
+                }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
+            }
         }
         // this section is for preemp priority
         private void PremPriority(List<Process> processList)
