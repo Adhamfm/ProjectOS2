@@ -634,177 +634,378 @@ namespace ProjectOS2
                 Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
             }
         }
+       int RoundRobin_Count = 0;
+        List<Process> save_list = new List<Process>();
         private void RoundRobin(List<Process> processList)
         {
-            //TODO
-            int quantum = (int)quantumInput.Value;
-            int current_time = 0;
-            int current_executed_time = 0;
-            int index = 0;
-            int processList_count = processList.Count;
 
-            sortedList = new List<Process>();
-            List<Process> waiting_list = new List<Process>();
-            List<Process> calculate_list = new List<Process>();
+            
 
-
-            //Assign remaining time to burst time
-            foreach (Process p in processList)
+            if (RoundRobin_Count == 0)
             {
-                p.RemainingTime = p.burstTime;
-            }
-
-
-            //Add processes to waiting list on each second
-            do
-            {
-                bool added_process = false;
-                int i = 0;
-                int count = 0;
-
-                while (count < processList_count)
+                foreach(Process p in processList)
                 {
-                    if (processList[i].arrivalTime == current_time)
-                    {
-                        waiting_list.Add(processList[i]);
-                        processList.RemoveAt(i);
-                        added_process = true;
-                        i--;
-                    }
-                    i++;
-                    count++;
+                    Process process = new Process();
+                    process.name = p.name;
+                    process.burstTime = p.burstTime;
+                    process.arrivalTime = p.arrivalTime;
+                    save_list.Add(process);
                 }
 
-                if (!added_process)
+                RoundRobin_Count++;
+                int quantum = (int)quantumInput.Value;
+                int current_time = 0;
+                int current_executed_time = 0;
+                int index = 0;
+                int processList_count = processList.Count;
+
+                sortedList = new List<Process>();
+                List<Process> waiting_list = new List<Process>();
+                List<Process> calculate_list = new List<Process>();
+
+
+                //Assign remaining time to burst time
+                foreach (Process p in processList)
                 {
+                    p.RemainingTime = p.burstTime;
+                }
+
+
+                //Add processes to waiting list on each second
+                do
+                {
+                    bool added_process = false;
+                    int i = 0;
+                    int count = 0;
+
+                    while (count < processList_count)
+                    {
+                        if (processList[i].arrivalTime == current_time)
+                        {
+                            waiting_list.Add(processList[i]);
+                            processList.RemoveAt(i);
+                            added_process = true;
+                            i--;
+                        }
+                        i++;
+                        count++;
+                    }
+
+                    if (!added_process)
+                    {
+                        current_time++;
+                    }
+
+
+                }
+                while (waiting_list.Count == 0);
+
+                Process current_process = waiting_list[index];
+                current_process.serviceTime = current_time;
+
+
+                //Execute processes in waiting list on each second
+                //Add them to sorted list
+                //Non current increase waiting time
+
+                while (waiting_list.Count > 0)
+                {
+                    int i = 0;
+                    int count = 0;
+                    processList_count = processList.Count;
+
+
+                    while (count < processList_count)
+                    {
+                        if (processList[i].arrivalTime == current_time)
+                        {
+                            waiting_list.Add(processList[i]);
+                            //processList.RemoveAt(i);
+                            i--;
+                        }
+                        i++;
+                        count++;
+                    }
+
+                    //Normal Execution (Process Execution time < Quantum time)
+                    if (current_executed_time < quantum)
+                    {
+                        current_process.RemainingTime--;
+                        current_executed_time++;
+
+                        if (current_process.RemainingTime == 0)
+                        {
+                            //current_process.turnaroundTime = current_time - current_process.arrivalTime;
+                            //sortedList.Add(current_process);
+
+                            if (waiting_list.Count > 1)
+                            {
+                                //Temp Process for calculation
+                                Process temp_calc = new Process();
+                                temp_calc.name = current_process.name;
+                                temp_calc.burstTime = current_process.burstTime;
+                                temp_calc.turnaroundTime = current_time + 1;
+                                temp_calc.waitingTime = temp_calc.turnaroundTime - temp_calc.burstTime;
+                                calculate_list.Add(temp_calc);
+
+                                waiting_list.Remove(current_process);
+                                index--;
+                            }
+
+                            else
+                            {
+                                //Temp Process for calculation
+                                Process temp_calc = new Process();
+                                temp_calc.name = current_process.name;
+                                temp_calc.burstTime = current_process.burstTime;
+                                temp_calc.turnaroundTime = current_time + 1;
+                                temp_calc.waitingTime = temp_calc.turnaroundTime - temp_calc.burstTime;
+                                calculate_list.Add(temp_calc);
+
+                                current_process.turnaroundTime = current_time + 1;
+                                sortedList.Add(current_process);
+                                waiting_list.Remove(current_process);
+                            }
+
+                        }
+
+                    }
+
+                    //Switch process
+                    //Try and Catch
+                    else
+                    {
+                        //Add already executed process to sorted list
+                        //Clone Current Process
+                        Process temp = new Process();
+                        temp.name = current_process.name;
+                        temp.turnaroundTime = current_time;
+                        temp.serviceTime = current_process.serviceTime;
+                        temp.waitingTime = current_process.waitingTime;
+
+                        sortedList.Add(temp);
+
+                        //Switch to next process
+                        try
+                        {
+                            current_process = waiting_list[++index];
+                        }
+
+                        catch
+                        {
+                            index = 0;
+                            current_process = waiting_list[index];
+                        }
+
+                        //Assign service time and waiting time
+                        current_process.serviceTime = current_time;
+                        current_process.waitingTime = current_process.serviceTime - current_process.arrivalTime;
+
+
+                        current_executed_time = 0;
+                        current_time--;
+                    }
+
+
+
+
                     current_time++;
                 }
 
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                foreach (Process p in calculate_list)
+                {
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(calculate_list));
 
             }
-            while (waiting_list.Count == 0);
 
-            Process current_process = waiting_list[index];
-            current_process.serviceTime = current_time;
-
-
-            //Execute processes in waiting list on each second
-            //Add them to sorted list
-            //Non current increase waiting time
-
-            while (waiting_list.Count > 0)
+            else
             {
-                int i = 0;
-                int count = 0;
-                processList_count = processList.Count;
-
-                while (count < processList_count)
+                foreach (Process p in processList)
                 {
-                    if (processList[i].arrivalTime == current_time)
-                    {
-                        waiting_list.Add(processList[i]);
-                        processList.RemoveAt(i);
-                        i--;
-                    }
-                    i++;
-                    count++;
+                    Process process = new Process();
+                    process.name = p.name;
+                    process.burstTime = p.burstTime;
+                    process.arrivalTime = p.arrivalTime;
+                    save_list.Add(process);
                 }
 
-                //Normal Execution (Process Execution time < Quantum time)
-                if (current_executed_time < quantum)
+                int quantum = (int)quantumInput.Value;
+                int current_time = 0;
+                int current_executed_time = 0;
+                int index = 0;
+                int processList_count = save_list.Count;
+
+                sortedList.Clear();
+                List<Process> waiting_list = new List<Process>();
+                List<Process> calculate_list = new List<Process>();
+
+
+                //Assign remaining time to burst time
+                foreach (Process p in save_list)
                 {
-                    current_process.RemainingTime--;
-                    current_executed_time++;
+                    p.RemainingTime = p.burstTime;
+                }
 
-                    if (current_process.RemainingTime == 0)
+
+                //Add processes to waiting list on each second
+                do
+                {
+                    bool added_process = false;
+                    int i = 0;
+                    int count = 0;
+
+                    while (count < processList_count)
                     {
-                        //current_process.turnaroundTime = current_time - current_process.arrivalTime;
-                        //sortedList.Add(current_process);
-
-                        if (waiting_list.Count > 1)
+                        if (save_list[i].arrivalTime == current_time)
                         {
-                            //Temp Process for calculation
-                            Process temp_calc = new Process();
-                            temp_calc.name = current_process.name;
-                            temp_calc.burstTime = current_process.burstTime;
-                            temp_calc.turnaroundTime = current_time + 1;
-                            temp_calc.waitingTime = temp_calc.turnaroundTime - temp_calc.burstTime;
-                            calculate_list.Add(temp_calc);
+                            waiting_list.Add(save_list[i]);
+                            save_list.RemoveAt(i);
+                            added_process = true;
+                            i--;
+                        }
+                        i++;
+                        count++;
+                    }
 
-                            waiting_list.Remove(current_process);
-                            index--;
+                    if (!added_process)
+                    {
+                        current_time++;
+                    }
+
+
+                }
+                while (waiting_list.Count == 0);
+
+                Process current_process = waiting_list[index];
+                current_process.serviceTime = current_time;
+
+
+                //Execute processes in waiting list on each second
+                //Add them to sorted list
+                //Non current increase waiting time
+
+                while (waiting_list.Count > 0)
+                {
+                    int i = 0;
+                    int count = 0;
+                    processList_count = save_list.Count;
+
+                    while (count < processList_count)
+                    {
+                        if (save_list[i].arrivalTime == current_time)
+                        {
+                            waiting_list.Add(save_list[i]);
+                            save_list.RemoveAt(i);
+                            i--;
+                        }
+                        i++;
+                        count++;
+                    }
+
+                    //Normal Execution (Process Execution time < Quantum time)
+                    if (current_executed_time < quantum)
+                    {
+                        current_process.RemainingTime--;
+                        current_executed_time++;
+
+                        if (current_process.RemainingTime == 0)
+                        {
+                            //current_process.turnaroundTime = current_time - current_process.arrivalTime;
+                            //sortedList.Add(current_process);
+
+                            if (waiting_list.Count > 1)
+                            {
+                                //Temp Process for calculation
+                                Process temp_calc = new Process();
+                                temp_calc.name = current_process.name;
+                                temp_calc.burstTime = current_process.burstTime;
+                                temp_calc.turnaroundTime = current_time + 1;
+                                temp_calc.waitingTime = temp_calc.turnaroundTime - temp_calc.burstTime;
+                                calculate_list.Add(temp_calc);
+
+                                waiting_list.Remove(current_process);
+                                index--;
+                            }
+
+                            else
+                            {
+                                //Temp Process for calculation
+                                Process temp_calc = new Process();
+                                temp_calc.name = current_process.name;
+                                temp_calc.burstTime = current_process.burstTime;
+                                temp_calc.turnaroundTime = current_time + 1;
+                                temp_calc.waitingTime = temp_calc.turnaroundTime - temp_calc.burstTime;
+                                calculate_list.Add(temp_calc);
+
+                                current_process.turnaroundTime = current_time + 1;
+                                sortedList.Add(current_process);
+                                waiting_list.Remove(current_process);
+                            }
+
                         }
 
-                        else
-                        {
-                            //Temp Process for calculation
-                            Process temp_calc = new Process();
-                            temp_calc.name = current_process.name;
-                            temp_calc.burstTime = current_process.burstTime;
-                            temp_calc.turnaroundTime = current_time + 1;
-                            temp_calc.waitingTime = temp_calc.turnaroundTime - temp_calc.burstTime;
-                            calculate_list.Add(temp_calc);
+                    }
 
-                            current_process.turnaroundTime = current_time + 1;
-                            sortedList.Add(current_process);
-                            waiting_list.Remove(current_process);
+                    //Switch process
+                    //Try and Catch
+                    else
+                    {
+                        //Add already executed process to sorted list
+                        //Clone Current Process
+                        Process temp = new Process();
+                        temp.name = current_process.name;
+                        temp.turnaroundTime = current_time;
+                        temp.serviceTime = current_process.serviceTime;
+                        temp.waitingTime = current_process.waitingTime;
+
+                        sortedList.Add(temp);
+
+                        //Switch to next process
+                        try
+                        {
+                            current_process = waiting_list[++index];
                         }
 
+                        catch
+                        {
+                            index = 0;
+                            current_process = waiting_list[index];
+                        }
+
+                        //Assign service time and waiting time
+                        current_process.serviceTime = current_time;
+                        current_process.waitingTime = current_process.serviceTime - current_process.arrivalTime;
+
+
+                        current_executed_time = 0;
+                        current_time--;
                     }
 
+
+
+
+                    current_time++;
                 }
 
-                //Switch process
-                //Try and Catch
-                else
+                Console.WriteLine("\nAFTER ADDING NEW PROCESS\n");
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                foreach (Process p in processList)
                 {
-                    //Add already executed process to sorted list
-                    //Clone Current Process
-                    Process temp = new Process();
-                    temp.name = current_process.name;
-                    temp.turnaroundTime = current_time;
-                    temp.serviceTime = current_process.serviceTime;
-                    temp.waitingTime = current_process.waitingTime;
-
-                    sortedList.Add(temp);
-
-                    //Switch to next process
-                    try
-                    {
-                        current_process = waiting_list[++index];
-                    }
-
-                    catch
-                    {
-                        index = 0;
-                        current_process = waiting_list[index];
-                    }
-
-                    //Assign service time and waiting time
-                    current_process.serviceTime = current_time;
-                    current_process.waitingTime = current_process.serviceTime - current_process.arrivalTime;
-
-
-                    current_executed_time = 0;
-                    current_time--;
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
                 }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(processList));
 
-
-
-
-                current_time++;
             }
-
-
-            Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-            foreach (Process p in calculate_list)
-            {
-                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
-            }
-            Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(calculate_list));
+ 
         }
+        
         private int checkSelectedOptions(int selection)
         {
             int flag = 0;
