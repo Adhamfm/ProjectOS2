@@ -934,6 +934,7 @@ namespace ProjectOS2
                 Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(calculate_list));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(calculate_list));
 
             }
 
