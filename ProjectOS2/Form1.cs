@@ -747,7 +747,9 @@ namespace ProjectOS2
                 }
             }
         }
-      bool RoundRobin_First = true;
+        
+        
+        bool RoundRobin_First = true;
         List<Process> save_list = new List<Process>();
         List<Process> temp_save = new List<Process>();
         private void RoundRobin(List<Process> processList)
@@ -1118,15 +1120,16 @@ namespace ProjectOS2
                     current_time++;
                 }
 
+                Console.WriteLine();
                 Console.WriteLine("\nAFTER ADDING NEW PROCESS\n");
                 Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-                foreach (Process p in processList)
+                foreach (Process p in calculate_list)
                 {
                     Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
                 }
                 Console.WriteLine();
-                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
-                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(processList));
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(calculate_list));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(calculate_list));
 
             }
  
