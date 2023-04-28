@@ -162,6 +162,7 @@ namespace ProjectOS2
         }
         int fcfs_counter = 0;
         int preemppriority_counter = 0;
+        int nonPreemSJF_counter = 0;
         private void FCFS(List<Process> processList)
         {
             fcfs_counter++;
