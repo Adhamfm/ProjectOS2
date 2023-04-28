@@ -262,22 +262,35 @@ namespace ProjectOS2
             }
 
         }
+        int callCount = 0;
         private void PremSJF(List<Process> processList)
         {
-            //TODO
+            callCount++;
+            if (callCount == 1) { sortedList = new List<Process>(); }
+            else {sortedList.Clear(); }
+            
             int currentTime = 0;
             int completedProcessCount = 0;
             bool anyProcessArrived = true;
             Process currentProcess = null;
-            sortedList = new List<Process>();
-            foreach (Process process in processList)
+           
+                foreach (Process p in processList)
+                {
+                    Process process = new Process();
+                    process.name = p.name;
+                    process.burstTime = p.burstTime;
+                    process.arrivalTime = p.arrivalTime;
+                    save_list.Add(process);
+                }
+                foreach (Process process in save_list)
             {
                 process.RemainingTime = process.burstTime;
             }
-            while (completedProcessCount < processList.Count)
+
+            while (completedProcessCount < save_list.Count)
             {
                 anyProcessArrived = false;
-                foreach (Process process in processList)
+                foreach (Process process in save_list)
                 {
                     if (process.arrivalTime <= currentTime)
                     {
@@ -319,13 +332,16 @@ namespace ProjectOS2
                     currentProcess = null;
                 }
             }
+            if(callCount > 1) Console.WriteLine("AFTER ADDING PROCESS");
             Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-            foreach (Process p in processList)
+            foreach (Process p in save_list)
             {
                 Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
             }
             Console.WriteLine();
-            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(save_list));
+            processList.Clear();
+            
         }
         private void NonPremSJF(List<Process> processList)
         {
@@ -833,8 +849,7 @@ namespace ProjectOS2
                     process.arrivalTime = p.arrivalTime;
                     save_list.Add(process);
                 }
-
-                int quantum = (int)quantumInput.Value;
+                    int quantum = (int)quantumInput.Value;
                 int current_time = 0;
                 int current_executed_time = 0;
                 int index = 0;
