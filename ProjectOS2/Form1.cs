@@ -90,7 +90,6 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            process.RemainingTime = process.burstTime;
                         }
                         else if (col == 3)
                         {
@@ -124,7 +123,6 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            process.RemainingTime = process.burstTime;
                             processList.Add(process);
                         }
                     }
@@ -163,6 +161,7 @@ namespace ProjectOS2
             return sortedList;
         }
         int fcfs_counter = 0;
+        int preemppriority_counter = 0;
         private void FCFS(List<Process> processList)
         {
             fcfs_counter++;
@@ -335,69 +334,186 @@ namespace ProjectOS2
         // this section is for preemp priority
         private void PremPriority(List<Process> processList)
         {
-            int currentTime = 0;
-            int completedProcessCount = 0;
-            bool anyProcessArrived = true;
-            Process currentProcess = null;
-            sortedList = new List<Process>();
-            foreach(Process p in processList)
+            preemppriority_counter++;
+            if (preemppriority_counter == 1)
+            {
+                int currentTime = 0;
+                int completedProcessCount = 0;
+                bool anyProcessArrived = true;
+                Process currentProcess = null;
+                sortedList = new List<Process>();
+                foreach(Process p in processList)
             {
                 p.RemainingTime = p.burstTime;
             }
-            while (completedProcessCount < processList.Count)
-            {
-                anyProcessArrived = false;
-                foreach (Process process in processList)
+                while (completedProcessCount < processList.Count)
                 {
-                    if (process.arrivalTime <= currentTime)
+                    anyProcessArrived = false;
+                    foreach (Process process in processList)
                     {
-                        anyProcessArrived = true;
-                        if ((currentProcess == null || process.priority < currentProcess.priority) && process.RemainingTime > 0)
+                        if (process.arrivalTime <= currentTime)
                         {
-                            if (currentProcess != null)
+                            anyProcessArrived = true;
+                            if ((currentProcess == null || process.priority < currentProcess.priority) && process.RemainingTime > 0)
                             {
-                                Process temp = new Process();
-                                currentProcess.turnaroundTime = currentTime;
-                                temp.name = currentProcess.name;
-                                temp.serviceTime = currentProcess.serviceTime;
-                                temp.turnaroundTime = currentProcess.turnaroundTime;
-                                sortedList.Add(temp);
+                                if (currentProcess != null)
+                                {
+                                    Process temp = new Process();
+                                    currentProcess.turnaroundTime = currentTime;
+                                    temp.name = currentProcess.name;
+                                    temp.serviceTime = currentProcess.serviceTime;
+                                    temp.turnaroundTime = currentProcess.turnaroundTime;
+                                    sortedList.Add(temp);
+                                }
+                                currentProcess = process;
+                                currentProcess.serviceTime = currentTime;
                             }
-                            currentProcess = process;
-                            currentProcess.serviceTime = currentTime;
                         }
                     }
-                }
-                if (!anyProcessArrived)
-                {
+                    if (!anyProcessArrived)
+                    {
+                        currentTime++;
+                        continue;
+                    }
+                    if (currentProcess != null)
+                    { currentProcess.RemainingTime--; }
                     currentTime++;
-                    continue;
+                    if (currentProcess != null && currentProcess.RemainingTime == 0)
+                    {
+                        Process temp = new Process();
+                        currentProcess.turnaroundTime = currentTime;
+                        temp.name = currentProcess.name;
+                        temp.serviceTime = currentProcess.serviceTime;
+                        temp.turnaroundTime = currentProcess.turnaroundTime;
+                        sortedList.Add(temp);
+                        completedProcessCount++;
+                        currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
+                        currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+                        currentProcess = null;
+                    }
                 }
-                currentProcess.RemainingTime--;
-                currentTime++;
-                if (currentProcess.RemainingTime == 0)
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                foreach (Process p in processList)
                 {
-                    Process temp = new Process();
-                    currentProcess.turnaroundTime = currentTime;
-                    temp.name = currentProcess.name;
-                    temp.serviceTime = currentProcess.serviceTime;
-                    temp.turnaroundTime = currentProcess.turnaroundTime;
-                    sortedList.Add(temp);
-                    completedProcessCount++;
-                    currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
-                    currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
-                    currentProcess = null;
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
                 }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(processList));
             }
-            Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-            foreach (Process p in processList)
+            else
             {
-                Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
+                List <Process> processDrawn = new List <Process>();
+                currentTime = getTimer();
+                int completedProcessCount = 0;
+                bool anyProcessArrived = true;
+                Process currentProcess = null;
+                foreach(Process p in processList)
+                {
+                    p.RemainingTime = p.burstTime;
+                }
+                foreach(Process p in sortedList)
+                {
+                    if (p.turnaroundTime <= currentTime)
+                    {
+                        foreach (Process proc in processList)
+                        {
+                            if (proc.name == p.name)
+                            {
+                                proc.RemainingTime = proc.RemainingTime - p.turnaroundTime + p.serviceTime;
+                                processDrawn.Add(p);
+                            }
+                        }
+                    }
+                    else if(p.serviceTime < currentTime)
+                    {
+                    
+                    foreach (Process proc in processList)
+                            {
+                                if (proc.name == p.name)
+                                {
+                                    proc.RemainingTime = proc.RemainingTime - currentTime + p.serviceTime;
+                                processDrawn.Add(p);
+                                }
+                            }
+                        
+                    }
+                    else { break; }
+                }
+                foreach(Process p in processList)
+                {
+                    if (p.RemainingTime == 0)
+                    {
+                        completedProcessCount++;
+                    }
+                }
+                sortedList.Clear();
+                foreach(Process p in processDrawn)
+                {
+                    sortedList.Add(p);
+                }
+                while (completedProcessCount < processList.Count)
+                {
+                    anyProcessArrived = false;
+                    foreach (Process process in processList)
+                    {
+                        if (process.arrivalTime <= currentTime)
+                        {
+                            anyProcessArrived = true;
+                            if ((currentProcess == null || process.priority < currentProcess.priority) && process.RemainingTime > 0)
+                            {
+                                if (currentProcess != null)
+                                {
+                                    Process temp = new Process();
+                                    currentProcess.turnaroundTime = currentTime;
+                                    temp.name = currentProcess.name;
+                                    temp.serviceTime = currentProcess.serviceTime;
+                                    temp.turnaroundTime = currentProcess.turnaroundTime;
+                                    if (temp.serviceTime < temp.turnaroundTime)
+                                    {
+                                        sortedList.Add(temp);
+                                    }
+                                }
+                                currentProcess = process;
+                                currentProcess.serviceTime = currentTime;
+                            }
+                        }
+                    }
+                    if (!anyProcessArrived)
+                    {
+                        currentTime++;
+                        continue;
+                    }
+                    if (currentProcess != null)
+                    { currentProcess.RemainingTime--; }
+                    currentTime++;
+                    if (currentProcess != null && currentProcess.RemainingTime == 0)
+                    {
+                        Process temp = new Process();
+                        currentProcess.turnaroundTime = currentTime;
+                        temp.name = currentProcess.name;
+                        temp.serviceTime = currentProcess.serviceTime;
+                        temp.turnaroundTime = currentProcess.turnaroundTime;
+                        sortedList.Add(temp);
+                        completedProcessCount++;
+                        currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
+                        currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+                        currentProcess = null;
+                    }
+                }
+                Console.WriteLine("\nAFTER ADDING NEW PROCESS\n");
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                foreach (Process p in processList)
+                {
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
+                }
+                Console.WriteLine();
+                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+                Console.WriteLine("\nAverage Turnaround time: {0}", avgTurnAroundTime(processList));
+                
             }
-            Console.WriteLine();
-            Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
-        
-    }
+
+        }
        
         // end of the section
 
@@ -938,7 +1054,6 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            process.RemainingTime = process.burstTime; // For Prem
                         }
                         else if (col == 3)
                         {
@@ -973,7 +1088,6 @@ namespace ProjectOS2
                         else if (col == 2)
                         {
                             process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            process.RemainingTime = process.burstTime; // For Prem
                             newAddedProcesses.Add(process);
                             processList.Add(process);
                         }
