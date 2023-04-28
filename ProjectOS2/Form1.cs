@@ -670,9 +670,6 @@ namespace ProjectOS2
             {
                 sortedList.Clear();              
                 sorted = SortByArrival(processList);
-                //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
-                sortedList = new List<Process>();
-
                 //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
                 sortedList.Add(sorted[0]);       //7ttha fel readylist
                 Process old = new Process();
