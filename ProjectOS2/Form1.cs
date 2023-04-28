@@ -560,62 +560,53 @@ namespace ProjectOS2
                     return p1.arrivalTime.CompareTo(p2.arrivalTime);
                 }
                 else
-                {  
+                {
                     return p1.arrivalTime.CompareTo(p2.arrivalTime);
                 }
             });
             return sorted;
         }
+
+        public int CompareProcesses(Process p1, Process p2)
+        {
+            if (p1.priority == p2.priority)
+            {
+                return int.Parse(p1.name.Substring(1)).CompareTo(int.Parse(p2.name.Substring(1)));
+            }
+            else
+            {
+                return p1.priority.CompareTo(p2.priority);
+            }
+        }
+        //List<Process> save_list = new List<Process>();
+
         private void NonPremPriority(List<Process> processList)
         {
-            foreach (Process process in processList)
+            if (nonpreempprio_counter==0)
             {
-                process.RemainingTime = process.burstTime;
-            }
-            sorted = SortByArrival(processList);
-            //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
-            sortedList = new List<Process>();
-
-            //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
-            sortedList.Add(sorted[0]);       //7ttha fel readylist
-            Process old = new Process();
-            old = sortedList[0];
-
-            sorted[0].serviceTime = sorted[0].arrivalTime;    //1
-            endOfBurst = old.serviceTime + old.burstTime;      //hena =7 msln 
-            sorted[0].waitingTime = 0;
-            //sorted[0].turnaroundTime = endOfBurst - old.serviceTime;
-            sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
-
-            while (sorted.Count > 0)
-            {
-                for (int i = 0; i < sorted.Count; i++)
+                foreach (Process process in processList)
                 {
-                    if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
-                    {
-                        //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
-                        preready.Add(sorted[i]);
-                        sorted.Remove(sorted[i]);
-                        i--;
-                    }
-                    else
-                        continue;
+                    process.RemainingTime = process.burstTime;
+                    //save_list.Add(process);
                 }
-                //ascneding order of processes in preready based on their priorities
-                preready.Sort((p1, p2) => p1.priority.CompareTo(p2.priority));
+                nonpreempprio_counter++;
+                sorted = SortByArrival(processList);
+                //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
+                sortedList = new List<Process>();
 
-                //changes done here
-                for (int j = 0; j < preready.Count; j++)
+                //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
+                sortedList.Add(sorted[0]);       //7ttha fel readylist
+                Process old = new Process();
+                old = sortedList[0];
+
+                sorted[0].serviceTime = sorted[0].arrivalTime;    //1
+                endOfBurst = old.serviceTime + old.burstTime;      //hena =7 msln 
+                sorted[0].waitingTime = 0;
+                //sorted[0].turnaroundTime = endOfBurst - old.serviceTime;
+                sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
+
+                while (sorted.Count > 0)
                 {
-                    //Console.WriteLine("inside pre ready b3d el sorting " + preready[j].pid);
-                    sortedList.Add(preready[j]);
-                    preready[j].serviceTime = old.burstTime + old.serviceTime;
-                    preready[j].waitingTime = preready[j].serviceTime - preready[j].arrivalTime;
-                    endOfBurst += sortedList.Last().burstTime;
-                    old = preready[j];
-                    //Console.WriteLine("accumu: " + endOfBurst);
-                    preready.Remove(preready[j]);
-                    j--;
                     for (int i = 0; i < sorted.Count; i++)
                     {
                         if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
@@ -625,29 +616,136 @@ namespace ProjectOS2
                             sorted.Remove(sorted[i]);
                             i--;
                         }
+                        else
+                            continue;
                     }
-                    preready.Sort((p1, p2) => p1.priority.CompareTo(p2.priority));
-                }
-                foreach (Process p in sortedList)
-                {
-                    p.turnaroundTime = p.burstTime + p.serviceTime;
-                }
-
-                // Execute processes in the sortedList
-                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
-                Process runningProcess = new Process();
-                foreach (Process p in sortedList)
-                {
-                    runningProcess = p;
-                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime - p.arrivalTime);
-                    while (p.RemainingTime != 0)
+                    //ascneding order of processes in preready based on their priorities
+                    preready.Sort(CompareProcesses);
+                    //changes done here
+                    for (int j = 0; j < preready.Count; j++)
                     {
-                        runningProcess.RemainingTime--;
+                        //Console.WriteLine("inside pre ready b3d el sorting " + preready[j].pid);
+                        sortedList.Add(preready[j]);
+                        preready[j].serviceTime = old.burstTime + old.serviceTime;
+                        preready[j].waitingTime = preready[j].serviceTime - preready[j].arrivalTime;
+                        endOfBurst += sortedList.Last().burstTime;
+                        old = preready[j];
+                        //Console.WriteLine("accumu: " + endOfBurst);
+                        preready.Remove(preready[j]);
+                        j--;
+                        for (int i = 0; i < sorted.Count; i++)
+                        {
+                            if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
+                            {
+                                //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
+                                preready.Add(sorted[i]);
+                                sorted.Remove(sorted[i]);
+                                i--;
+                            }
+                            else
+                                continue;
+                        }
+                        preready.Sort(CompareProcesses);
                     }
-                    runningProcess = null;
+                    foreach (Process p in sortedList)
+                    {
+                        p.turnaroundTime = p.burstTime + p.serviceTime;
+                    }
+                    // Execute processes in the sortedList
+                    Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                    Process runningProcess = new Process();
+                    foreach (Process p in sortedList)
+                    {
+                        runningProcess = p;
+                        Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime - p.arrivalTime);
+                        while (p.RemainingTime != 0)
+                        {
+                            runningProcess.RemainingTime--;
+                        }
+                        runningProcess = null;
+                    }
+                    Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
                 }
+            }
+            else
+            {
+                sortedList.Clear();              
+                sorted = SortByArrival(processList);
+                //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
+                sortedList = new List<Process>();
 
-                Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+                //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
+                sortedList.Add(sorted[0]);       //7ttha fel readylist
+                Process old = new Process();
+                old = sortedList[0];
+
+                sorted[0].serviceTime = sorted[0].arrivalTime;    //1
+                endOfBurst = old.serviceTime + old.burstTime;      //hena =7 msln 
+                sorted[0].waitingTime = 0;
+                //sorted[0].turnaroundTime = endOfBurst - old.serviceTime;
+                sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
+
+                while (sorted.Count > 0)
+                {
+                    for (int i = 0; i < sorted.Count; i++)
+                    {
+                        if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
+                        {
+                            //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
+                            preready.Add(sorted[i]);
+                            sorted.Remove(sorted[i]);
+                            i--;
+                        }
+                        else
+                            continue;
+                    }
+                    //ascneding order of processes in preready based on their priorities
+                    preready.Sort(CompareProcesses);
+                    //changes done here
+                    for (int j = 0; j < preready.Count; j++)
+                    {
+                        //Console.WriteLine("inside pre ready b3d el sorting " + preready[j].pid);
+                        sortedList.Add(preready[j]);
+                        preready[j].serviceTime = old.burstTime + old.serviceTime;
+                        preready[j].waitingTime = preready[j].serviceTime - preready[j].arrivalTime;
+                        endOfBurst += sortedList.Last().burstTime;
+                        old = preready[j];
+                        //Console.WriteLine("accumu: " + endOfBurst);
+                        preready.Remove(preready[j]);
+                        j--;
+                        for (int i = 0; i < sorted.Count; i++)
+                        {
+                            if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
+                            {
+                                //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
+                                preready.Add(sorted[i]);
+                                sorted.Remove(sorted[i]);
+                                i--;
+                            }
+                            else
+                                continue;
+                        }
+                        preready.Sort(CompareProcesses);
+                    }
+                    foreach (Process p in sortedList)
+                    {
+                        p.turnaroundTime = p.burstTime + p.serviceTime;
+                    }
+                    // Execute processes in the sortedList
+                    Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
+                    Process runningProcess = new Process();
+                    foreach (Process p in sortedList)
+                    {
+                        runningProcess = p;
+                        Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime - p.arrivalTime);
+                        while (p.RemainingTime != 0)
+                        {
+                            runningProcess.RemainingTime--;
+                        }
+                        runningProcess = null;
+                    }
+                    Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
+                }
             }
         }
       bool RoundRobin_First = true;
