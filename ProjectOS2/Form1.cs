@@ -650,14 +650,15 @@ namespace ProjectOS2
                 Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
             }
         }
-       int RoundRobin_Count = 0;
+      bool RoundRobin_First = true;
         List<Process> save_list = new List<Process>();
+        List<Process> temp_save = new List<Process>();
         private void RoundRobin(List<Process> processList)
         {
 
             
 
-            if (RoundRobin_Count == 0)
+            if (RoundRobin_First)
             {
                 foreach(Process p in processList)
                 {
@@ -668,7 +669,8 @@ namespace ProjectOS2
                     save_list.Add(process);
                 }
 
-                RoundRobin_Count++;
+                RoundRobin_First = false;
+
                 int quantum = (int)quantumInput.Value;
                 int current_time = 0;
                 int current_executed_time = 0;
@@ -849,11 +851,23 @@ namespace ProjectOS2
                     process.arrivalTime = p.arrivalTime;
                     save_list.Add(process);
                 }
-                    int quantum = (int)quantumInput.Value;
+
+                temp_save.Clear();
+
+                foreach (Process p in save_list)
+                {
+                    Process process = new Process();
+                    process.name = p.name;
+                    process.burstTime = p.burstTime;
+                    process.arrivalTime = p.arrivalTime;
+                    temp_save.Add(process);
+                }
+
+                int quantum = (int)quantumInput.Value;
                 int current_time = 0;
                 int current_executed_time = 0;
                 int index = 0;
-                int processList_count = save_list.Count;
+                int processList_count = temp_save.Count;
 
                 sortedList.Clear();
                 List<Process> waiting_list = new List<Process>();
@@ -861,7 +875,7 @@ namespace ProjectOS2
 
 
                 //Assign remaining time to burst time
-                foreach (Process p in save_list)
+                foreach (Process p in temp_save)
                 {
                     p.RemainingTime = p.burstTime;
                 }
@@ -876,10 +890,10 @@ namespace ProjectOS2
 
                     while (count < processList_count)
                     {
-                        if (save_list[i].arrivalTime == current_time)
+                        if (temp_save[i].arrivalTime == current_time)
                         {
-                            waiting_list.Add(save_list[i]);
-                            save_list.RemoveAt(i);
+                            waiting_list.Add(temp_save[i]);
+                            temp_save.RemoveAt(i);
                             added_process = true;
                             i--;
                         }
@@ -908,14 +922,14 @@ namespace ProjectOS2
                 {
                     int i = 0;
                     int count = 0;
-                    processList_count = save_list.Count;
+                    processList_count = temp_save.Count;
 
                     while (count < processList_count)
                     {
-                        if (save_list[i].arrivalTime == current_time)
+                        if (temp_save[i].arrivalTime == current_time)
                         {
-                            waiting_list.Add(save_list[i]);
-                            save_list.RemoveAt(i);
+                            waiting_list.Add(temp_save[i]);
+                            temp_save.RemoveAt(i);
                             i--;
                         }
                         i++;
