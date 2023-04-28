@@ -578,8 +578,8 @@ namespace ProjectOS2
                 return p1.priority.CompareTo(p2.priority);
             }
         }
-        //List<Process> save_list = new List<Process>();
-
+        
+        int nonpreempprio_counter=0;
         private void NonPremPriority(List<Process> processList)
         {
             if (nonpreempprio_counter==0)
@@ -587,7 +587,6 @@ namespace ProjectOS2
                 foreach (Process process in processList)
                 {
                     process.RemainingTime = process.burstTime;
-                    //save_list.Add(process);
                 }
                 nonpreempprio_counter++;
                 sorted = SortByArrival(processList);
@@ -667,7 +666,7 @@ namespace ProjectOS2
                     Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(processList));
                 }
             }
-            else
+            else    //in case process is added live
             {
                 sortedList.Clear();              
                 sorted = SortByArrival(processList);
