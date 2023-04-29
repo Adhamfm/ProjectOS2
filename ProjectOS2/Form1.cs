@@ -31,7 +31,7 @@ namespace ProjectOS2
         private async void btn_add_Click(object sender, EventArgs e) {
             if (getGraphRunning())
             {
-                setPause();
+                setPause(false);
                 setGraphRunning(false);
                 rowsSaved = dataGridView1.RowCount;
                 btn_prc_add.Enabled = true;
@@ -40,6 +40,7 @@ namespace ProjectOS2
                 {
                     dataGridView1.Rows[row].ReadOnly = true;
                 }
+                btn_add.Enabled = false;
             }
             dataGridView1.Rows.Add("P" + counter, 0, 0);
             counter++;
@@ -49,7 +50,7 @@ namespace ProjectOS2
         private async void btn_generate_Click(object sender, EventArgs e)
         {
             processList = new List<Process>();
-            btn_generate.Enabled = false;
+            
             flag = 0; // Scheduler Type
             int selection = comboBox.SelectedIndex;
             this.Refresh();
@@ -65,68 +66,76 @@ namespace ProjectOS2
             if (flag == -1) return;
 
             // Read data from DataGridView
-
-            if (flag == 3 || flag == 4)
+            try
             {
-                for (int row = 0; row < dataGridView1.RowCount; row++)
-                {
-                    Process process = new Process();
-                    for (int col = 0; col < dataGridView1.ColumnCount; col++)
-                    {
-                        if (dataGridView1.Rows[row].Cells[col].Value == null)
-                        {
-                            MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
-                            return;
-                        }
 
-                        if (col == 0)
+                if (flag == 3 || flag == 4)
+                {
+                    for (int row = 0; row < dataGridView1.RowCount; row++)
+                    {
+                        Process process = new Process();
+                        for (int col = 0; col < dataGridView1.ColumnCount; col++)
                         {
-                            process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
-                        }
-                        else if (col == 1)
-                        {
-                            process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                        }
-                        else if (col == 2)
-                        {
-                            process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                        }
-                        else if (col == 3)
-                        {
-                            process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            processList.Add(process);
+                            if (dataGridView1.Rows[row].Cells[col].Value == null)
+                            {
+                                MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                                return;
+                            }
+
+                            if (col == 0)
+                            {
+                                process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                            }
+                            else if (col == 1)
+                            {
+                                process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            }
+                            else if (col == 2)
+                            {
+                                process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            }
+                            else if (col == 3)
+                            {
+                                process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                                processList.Add(process);
+                            }
                         }
                     }
                 }
-            }
-            else
-            {
-                for (int row = 0; row < dataGridView1.RowCount; row++)
+                else
                 {
-                    Process process = new Process();
-                    for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                    for (int row = 0; row < dataGridView1.RowCount; row++)
                     {
-                        if (dataGridView1.Rows[row].Cells[col].Value == null)
+                        Process process = new Process();
+                        for (int col = 0; col < dataGridView1.ColumnCount; col++)
                         {
-                            MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
-                            return;
-                        }
+                            if (dataGridView1.Rows[row].Cells[col].Value == null)
+                            {
+                                MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                                return;
+                            }
 
-                        if (col == 0)
-                        {
-                            process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
-                        }
-                        else if (col == 1)
-                        {
-                            process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                        }
-                        else if (col == 2)
-                        {
-                            process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            processList.Add(process);
+                            if (col == 0)
+                            {
+                                process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                            }
+                            else if (col == 1)
+                            {
+                                process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            }
+                            else if (col == 2)
+                            {
+                                process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                                processList.Add(process);
+                            }
                         }
                     }
                 }
+            } catch(Exception ex)
+            {
+                MessageBox.Show("Enter NUMBERS only!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                processList.Clear();
+                return;
             }
             btn_showform2.Enabled = true;
             GanttChart(processList, flag);
@@ -166,7 +175,7 @@ namespace ProjectOS2
         private void FCFS(List<Process> processList)
         {
             fcfs_counter++;
-            if (fcfs_counter == 1)
+            if (!getGraphRunning())
             {
 
                 Process prev = new Process();
@@ -1432,9 +1441,9 @@ namespace ProjectOS2
             testTimer = timer;
         }
         bool pause = true;
-        public void setPause()
+        public void setPause(bool pa)
         {
-            pause = !pause;
+            pause = pa;
         }
         bool graphRunning = false;
         public void setGraphRunning(bool running)
@@ -1457,7 +1466,6 @@ namespace ProjectOS2
 
         private async void rdn_live_CheckedChanged(object sender, EventArgs e)
         {
-
             if (testTimer != 0) return;
             testTimer = 0;
             while (true)
@@ -1466,10 +1474,12 @@ namespace ProjectOS2
                 {
                     if (getGraphRunning())
                     {
-                       // btn_prc_add.Enabled = true;
+                        // btn_prc_add.Enabled = true;
+                        btn_generate.Enabled = false;
                     }
                     else
                     {
+                        btn_generate.Enabled = true;
                         btn_prc_add.Enabled = false;
                     }
                     testTimer++;
@@ -1485,80 +1495,112 @@ namespace ProjectOS2
         private void btn_prc_add_Click(object sender, EventArgs e)
         {
             newAddedProcesses = new List<Process>();
-            setPause();
-            setGraphRunning(true);
-            btn_prc_add.Enabled=false;
+
             label3.Text = " ";
+            bool added = false;
             // Get new data
-            if (flag == 3 || flag == 4)
+            try
             {
-                for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
+                if (flag == 3 || flag == 4)
                 {
-                    Process process = new Process();
-                    for (int col = 0; col < dataGridView1.ColumnCount; col++)
+                    for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
                     {
-                        if (dataGridView1.Rows[row].Cells[col].Value == null)
+                        Process process = new Process();
+                        for (int col = 0; col < dataGridView1.ColumnCount; col++)
                         {
-                            MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
-                            return;
-                        }
+                            if (dataGridView1.Rows[row].Cells[col].Value == null)
+                            {
+                                MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                                return;
+                            }
 
-                        if (col == 0)
-                        {
-                            process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                            if (col == 0)
+                            {
+                                process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                            }
+                            else if (col == 1)
+                            {
+                                process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                                if (process.arrivalTime < getTimer())
+                                {
+                                    throw new ArgumentException();
+                                }
+                            }
+                            else if (col == 2)
+                            {
+                                process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                            }
+                            else if (col == 3)
+                            {
+                                process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                                newAddedProcesses.Add(process);
+                                processList.Add(process);
+                                added = true;
+                            }
                         }
-                        else if (col == 1)
+                    }
+                }
+                else
+                {
+                    for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
+                    {
+                        Process process = new Process();
+                        for (int col = 0; col < dataGridView1.ColumnCount; col++)
                         {
-                            process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                        }
-                        else if (col == 2)
-                        {
-                            process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                        }
-                        else if (col == 3)
-                        {
-                            process.priority = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            newAddedProcesses.Add(process);
-                            processList.Add(process);
+                            if (dataGridView1.Rows[row].Cells[col].Value == null)
+                            {
+                                MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                                return;
+                            }
+
+                            if (col == 0)
+                            {
+                                process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
+                            }
+                            else if (col == 1)
+                            {
+                                process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                                if (process.arrivalTime < getTimer())
+                                {
+                                    throw new ArgumentException();
+                                }
+                            }
+                            else if (col == 2)
+                            {
+                                process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
+                                newAddedProcesses.Add(process);
+                                processList.Add(process);
+                                added = true;
+                            }
                         }
                     }
                 }
             }
-            else
+            catch (ArgumentException ex)
             {
-                for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
-                {
-                    Process process = new Process();
-                    for (int col = 0; col < dataGridView1.ColumnCount; col++)
-                    {
-                        if (dataGridView1.Rows[row].Cells[col].Value == null)
-                        {
-                            MessageBox.Show("Please enter all input data!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
-                            return;
-                        }
+                MessageBox.Show("Make sure Arrival time > Timer", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
 
-                        if (col == 0)
-                        {
-                            process.name = dataGridView1.Rows[row].Cells[col].Value.ToString();
-                        }
-                        else if (col == 1)
-                        {
-                            process.arrivalTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                        }
-                        else if (col == 2)
-                        {
-                            process.burstTime = int.Parse(dataGridView1.Rows[row].Cells[col].Value.ToString());
-                            newAddedProcesses.Add(process);
-                            processList.Add(process);
-                        }
-                    }
-                }
+                return;
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Enter NUMBERS only!", "Fault", MessageBoxButtons.OK, MessageBoxIcon.Hand, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification);
+                if (added)
+                {
+                    processList.RemoveAt(processList.Count - 1);
+                    newAddedProcesses.RemoveAt(newAddedProcesses.Count - 1);
+                }
+                return;
+            }
+            setPause(true);
+            setGraphRunning(true);
+            btn_prc_add.Enabled = false;
             for (int row = rowsSaved; row < dataGridView1.RowCount; row++)
             {
                 dataGridView1.Rows[row].ReadOnly = true;
             }
             rowsSaved = dataGridView1.RowCount;
+            btn_add.Enabled = true;
             // call scheduler function
             // TODO call the function... 
             // New Processes is in **newAddedProcesses**;
@@ -1573,6 +1615,11 @@ namespace ProjectOS2
         {
             Application.Restart();
             Environment.Exit(0);
+        }
+
+        private void rdn_instant_CheckedChanged(object sender, EventArgs e)
+        {
+            btn_generate.Enabled = true;
         }
     }
 }

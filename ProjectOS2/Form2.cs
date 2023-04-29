@@ -142,6 +142,7 @@ namespace ProjectOS2
 
         public async void drawChartLive(List<Process> sortedList)
         {
+            button3.Visible = true;
             // Chart chart = new Chart();
             // chart.Anchor = AnchorStyles.Left & AnchorStyles.Right & AnchorStyles.Bottom & AnchorStyles.Top;
             // chart.Dock = DockStyle.Top;
@@ -218,7 +219,7 @@ namespace ProjectOS2
 
         private void button3_Click(object sender, EventArgs e)
         {
-            mainForm.setPause();
+            mainForm.setPause(false);
             if (button3.Text != "Resume Timer")
                 button3.Text = "Resume Timer";
             else
