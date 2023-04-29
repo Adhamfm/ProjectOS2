@@ -186,6 +186,10 @@ namespace ProjectOS2
                 //}
                 //end = start + p.burstTime;
                  int i = chart.Series["s1"].Points.AddXY(1, p.serviceTime, p.serviceTime);
+                if (p.turnaroundTime >= objChart.AxisY.Maximum)
+                {
+                    objChart.AxisY.Maximum = sortedList.Last().turnaroundTime + 10;
+                }
                  //chart.Series["s1"].Points.RemoveAt(i);
                 while (mainForm.getTimer() < p.turnaroundTime)
                 {
