@@ -1,8 +1,0 @@
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\bin\Debug\OS_Scheduler.exe.config
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\bin\Debug\OS_Scheduler.exe
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\bin\Debug\OS_Scheduler.pdb
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\obj\Debug\OS_Scheduler.csproj.AssemblyReference.cache
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\obj\Debug\OS_Scheduler.csproj.SuggestedBindingRedirects.cache
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\obj\Debug\OS_Scheduler.csproj.CoreCompileInputs.cache
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\obj\Debug\OS_Scheduler.exe
-D:\Senior 1\Operating Systems\Project\OS\OS_Scheduler\obj\Debug\OS_Scheduler.pdb
