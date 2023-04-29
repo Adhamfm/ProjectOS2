@@ -686,15 +686,15 @@ namespace ProjectOS2
             sorted.Sort((p1, p2) =>
             {
                 if (p1.priority != p2.priority && p1.arrivalTime == p2.arrivalTime)
-                {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                {
                     return p1.priority.CompareTo(p2.priority);
                 }
-                else if (p1.priority == p2.priority && p1.arrivalTime == p2.arrivalTime) //lw 3ndhom nfs el arrival wel priority time w nfs el priority
-                {                                                                   //then compare their pid            
+                else if (p1.priority == p2.priority && p1.arrivalTime == p2.arrivalTime) 
+                {                                                                               
                     return int.Parse(p1.name.Substring(1)).CompareTo(int.Parse(p2.name.Substring(1)));
                 }
                 else if (p1.priority != p2.priority && p1.arrivalTime != p2.arrivalTime)
-                {//lw m3ndhom4 nfs el priority bs nfs el arrival time then sort wrt to their priorities
+                {
                     return p1.arrivalTime.CompareTo(p2.arrivalTime);
                 }
                 else if (p1.priority == p2.priority && p1.arrivalTime != p2.arrivalTime)
