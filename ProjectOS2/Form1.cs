@@ -261,10 +261,10 @@ namespace ProjectOS2
                 }
                 //txtConsole.Clear();
                 Console.WriteLine("AFTER ADDING PROCESS");
-                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\tService Time\n");
+                Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
                 foreach (Process p in sortedList)
                 {
-                    Console.WriteLine("{0}\t\t{1}\t\t{2}\t\t{3}", p.name, p.waitingTime, p.turnaroundTime,p.serviceTime);
+                    Console.WriteLine("{0}\t\t{1}\t\t{2}", p.name, p.waitingTime, p.turnaroundTime);
                 }
                 Console.WriteLine();
                 Console.WriteLine("\nAverage waiting time: {0}", avgWaitingTime(sortedList));
