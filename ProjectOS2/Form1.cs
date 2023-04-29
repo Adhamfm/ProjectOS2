@@ -677,8 +677,8 @@ namespace ProjectOS2
         //non preemp prio
         public static List<Process> sorted = new List<Process>();
         public static List<Process> preready = new List<Process>();
-        public static int currentTime;
         public static int endOfBurst;
+        
         public static List<Process> SortByArrival(List<Process> listOFProcesses)
         {
             List<Process> sorted = new List<Process>(listOFProcesses);
@@ -731,19 +731,17 @@ namespace ProjectOS2
                 }
                 nonpreempprio_counter++;
                 sorted = SortByArrival(processList);
-                //now the processes are sorted, and i assigned the current time to the arrival time of the process which arrived first (whatever b2a its priority) 
                 sortedList = new List<Process>();
 
-                //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
-                sortedList.Add(sorted[0]);       //7ttha fel readylist
+                //the first arrived will always be executed first, so it is added to our sortedList
+                sortedList.Add(sorted[0]);       
                 Process old = new Process();
                 old = sortedList[0];
 
-                sorted[0].serviceTime = sorted[0].arrivalTime;    //1
-                endOfBurst = old.serviceTime + old.burstTime;      //hena =7 msln 
+                sorted[0].serviceTime = sorted[0].arrivalTime;    
+                endOfBurst = old.serviceTime + old.burstTime;      
                 sorted[0].waitingTime = 0;
-                //sorted[0].turnaroundTime = endOfBurst - old.serviceTime;
-                sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
+                sorted.RemoveAt(0);                   //no longer needed in the sorted list, so i remove it
 
                 while (sorted.Count > 0)
                 {
@@ -751,7 +749,8 @@ namespace ProjectOS2
                     {
                         if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
                         {
-                            //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
+                                //if a process arrives at a time that is <= endofburst of the previous process
+                                //then it is added to the preready list
                             preready.Add(sorted[i]);
                             sorted.Remove(sorted[i]);
                             i--;
@@ -759,25 +758,21 @@ namespace ProjectOS2
                         else
                             continue;
                     }
-                    //ascneding order of processes in preready based on their priorities
                     preready.Sort(CompareProcesses);
-                    //changes done here
+                    
                     for (int j = 0; j < preready.Count; j++)
                     {
-                        //Console.WriteLine("inside pre ready b3d el sorting " + preready[j].pid);
                         sortedList.Add(preready[j]);
                         preready[j].serviceTime = old.burstTime + old.serviceTime;
                         preready[j].waitingTime = preready[j].serviceTime - preready[j].arrivalTime;
                         endOfBurst += sortedList.Last().burstTime;
                         old = preready[j];
-                        //Console.WriteLine("accumu: " + endOfBurst);
                         preready.Remove(preready[j]);
                         j--;
                         for (int i = 0; i < sorted.Count; i++)
                         {
                             if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
                             {
-                                //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
                                 preready.Add(sorted[i]);
                                 sorted.Remove(sorted[i]);
                                 i--;
@@ -791,6 +786,7 @@ namespace ProjectOS2
                     {
                         p.turnaroundTime = p.burstTime + p.serviceTime;
                     }
+                    
                     // Execute processes in the sortedList
                     Console.WriteLine("Process ID\tWaiting Time\tTurnaround Time\n");
                     Process runningProcess = new Process();
@@ -811,16 +807,14 @@ namespace ProjectOS2
             {
                 sortedList.Clear();              
                 sorted = SortByArrival(processList);
-                //awl arrived process will always be executed first b3d kda b2a nshoof n3eed el trteeb w kda
-                sortedList.Add(sorted[0]);       //7ttha fel readylist
+                sortedList.Add(sorted[0]);       
                 Process old = new Process();
                 old = sortedList[0];
 
-                sorted[0].serviceTime = sorted[0].arrivalTime;    //1
-                endOfBurst = old.serviceTime + old.burstTime;      //hena =7 msln 
+                sorted[0].serviceTime = sorted[0].arrivalTime;    
+                endOfBurst = old.serviceTime + old.burstTime;      
                 sorted[0].waitingTime = 0;
-                //sorted[0].turnaroundTime = endOfBurst - old.serviceTime;
-                sorted.RemoveAt(0);                   //4eltaha mn el sorted list  
+                sorted.RemoveAt(0);                    
 
                 while (sorted.Count > 0)
                 {
@@ -828,7 +822,6 @@ namespace ProjectOS2
                     {
                         if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
                         {
-                            //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
                             preready.Add(sorted[i]);
                             sorted.Remove(sorted[i]);
                             i--;
@@ -836,25 +829,20 @@ namespace ProjectOS2
                         else
                             continue;
                     }
-                    //ascneding order of processes in preready based on their priorities
                     preready.Sort(CompareProcesses);
-                    //changes done here
                     for (int j = 0; j < preready.Count; j++)
                     {
-                        //Console.WriteLine("inside pre ready b3d el sorting " + preready[j].pid);
                         sortedList.Add(preready[j]);
                         preready[j].serviceTime = old.burstTime + old.serviceTime;
                         preready[j].waitingTime = preready[j].serviceTime - preready[j].arrivalTime;
                         endOfBurst += sortedList.Last().burstTime;
                         old = preready[j];
-                        //Console.WriteLine("accumu: " + endOfBurst);
                         preready.Remove(preready[j]);
                         j--;
                         for (int i = 0; i < sorted.Count; i++)
                         {
                             if (sorted.Count > 0 && sorted[i].arrivalTime <= endOfBurst)
                             {
-                                //hena h3ml sort by priority el priority el as8r howa el hy execute el awl 
                                 preready.Add(sorted[i]);
                                 sorted.Remove(sorted[i]);
                                 i--;
