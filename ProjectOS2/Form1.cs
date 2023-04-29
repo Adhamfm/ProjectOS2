@@ -964,7 +964,7 @@ namespace ProjectOS2
                         if (processList[i].arrivalTime == current_time)
                         {
                             waiting_list.Add(processList[i]);
-                            //processList.RemoveAt(i);
+                            processList.RemoveAt(i);
                             i--;
                         }
                         i++;
