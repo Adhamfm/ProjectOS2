@@ -49,12 +49,11 @@
             this.rdn_instant = new System.Windows.Forms.RadioButton();
             this.rdn_live = new System.Windows.Forms.RadioButton();
             this.btn_rmv = new System.Windows.Forms.Button();
-            this.testLabel = new System.Windows.Forms.Label();
             this.btn_prc_add = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.processBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.processPriorityBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.quantumPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.quantumInput)).BeginInit();
@@ -108,12 +107,13 @@
             // btn_generate
             // 
             this.btn_generate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_generate.Location = new System.Drawing.Point(514, 299);
+            this.btn_generate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_generate.Location = new System.Drawing.Point(508, 251);
             this.btn_generate.Margin = new System.Windows.Forms.Padding(2);
             this.btn_generate.Name = "btn_generate";
-            this.btn_generate.Size = new System.Drawing.Size(74, 30);
+            this.btn_generate.Size = new System.Drawing.Size(140, 45);
             this.btn_generate.TabIndex = 2;
-            this.btn_generate.Text = "Generate";
+            this.btn_generate.Text = "GENERATE";
             this.btn_generate.UseVisualStyleBackColor = true;
             this.btn_generate.Click += new System.EventHandler(this.btn_generate_Click);
             // 
@@ -130,12 +130,13 @@
             this.comboBox.Location = new System.Drawing.Point(668, 34);
             this.comboBox.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox.Name = "comboBox";
-            this.comboBox.Size = new System.Drawing.Size(156, 32);
+            this.comboBox.Size = new System.Drawing.Size(156, 38);
             this.comboBox.TabIndex = 3;
             this.comboBox.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // btn_add
             // 
+            this.btn_add.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_add.Location = new System.Drawing.Point(70, 300);
             this.btn_add.Margin = new System.Windows.Forms.Padding(2);
             this.btn_add.Name = "btn_add";
@@ -172,7 +173,7 @@
             this.label1.Location = new System.Drawing.Point(2, 11);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 13);
+            this.label1.Size = new System.Drawing.Size(114, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Quantum Time  ";
             // 
@@ -194,7 +195,7 @@
             this.radbtn_nonprem.Location = new System.Drawing.Point(14, 30);
             this.radbtn_nonprem.Margin = new System.Windows.Forms.Padding(2);
             this.radbtn_nonprem.Name = "radbtn_nonprem";
-            this.radbtn_nonprem.Size = new System.Drawing.Size(101, 17);
+            this.radbtn_nonprem.Size = new System.Drawing.Size(117, 19);
             this.radbtn_nonprem.TabIndex = 1;
             this.radbtn_nonprem.TabStop = true;
             this.radbtn_nonprem.Text = "Non-Preemptive";
@@ -207,7 +208,7 @@
             this.radbtn_prem.Location = new System.Drawing.Point(14, 9);
             this.radbtn_prem.Margin = new System.Windows.Forms.Padding(2);
             this.radbtn_prem.Name = "radbtn_prem";
-            this.radbtn_prem.Size = new System.Drawing.Size(78, 17);
+            this.radbtn_prem.Size = new System.Drawing.Size(90, 19);
             this.radbtn_prem.TabIndex = 0;
             this.radbtn_prem.TabStop = true;
             this.radbtn_prem.Text = "Preemptive";
@@ -217,7 +218,8 @@
             // 
             this.btn_showform2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_showform2.Enabled = false;
-            this.btn_showform2.Location = new System.Drawing.Point(514, 215);
+            this.btn_showform2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_showform2.Location = new System.Drawing.Point(508, 300);
             this.btn_showform2.Margin = new System.Windows.Forms.Padding(2);
             this.btn_showform2.Name = "btn_showform2";
             this.btn_showform2.Size = new System.Drawing.Size(160, 50);
@@ -234,7 +236,7 @@
             this.label2.Location = new System.Drawing.Point(517, 34);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(149, 24);
+            this.label2.Size = new System.Drawing.Size(189, 29);
             this.label2.TabIndex = 10;
             this.label2.Text = "Schedular Type:";
             // 
@@ -260,7 +262,7 @@
             this.panel1.BackColor = System.Drawing.Color.Orange;
             this.panel1.Controls.Add(this.rdn_instant);
             this.panel1.Controls.Add(this.rdn_live);
-            this.panel1.Location = new System.Drawing.Point(698, 215);
+            this.panel1.Location = new System.Drawing.Point(690, 170);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(124, 58);
@@ -272,7 +274,7 @@
             this.rdn_instant.Location = new System.Drawing.Point(14, 30);
             this.rdn_instant.Margin = new System.Windows.Forms.Padding(2);
             this.rdn_instant.Name = "rdn_instant";
-            this.rdn_instant.Size = new System.Drawing.Size(57, 17);
+            this.rdn_instant.Size = new System.Drawing.Size(64, 19);
             this.rdn_instant.TabIndex = 1;
             this.rdn_instant.TabStop = true;
             this.rdn_instant.Text = "Instant";
@@ -285,7 +287,7 @@
             this.rdn_live.Location = new System.Drawing.Point(14, 9);
             this.rdn_live.Margin = new System.Windows.Forms.Padding(2);
             this.rdn_live.Name = "rdn_live";
-            this.rdn_live.Size = new System.Drawing.Size(45, 17);
+            this.rdn_live.Size = new System.Drawing.Size(50, 19);
             this.rdn_live.TabIndex = 0;
             this.rdn_live.TabStop = true;
             this.rdn_live.Text = "Live";
@@ -294,6 +296,7 @@
             // 
             // btn_rmv
             // 
+            this.btn_rmv.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_rmv.Location = new System.Drawing.Point(159, 300);
             this.btn_rmv.Margin = new System.Windows.Forms.Padding(2);
             this.btn_rmv.Name = "btn_rmv";
@@ -303,48 +306,18 @@
             this.btn_rmv.UseVisualStyleBackColor = true;
             this.btn_rmv.Click += new System.EventHandler(this.btn_rmv_Click);
             // 
-            // testLabel
-            // 
-            this.testLabel.AutoSize = true;
-            this.testLabel.Location = new System.Drawing.Point(391, 329);
-            this.testLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.testLabel.Name = "testLabel";
-            this.testLabel.Size = new System.Drawing.Size(35, 13);
-            this.testLabel.TabIndex = 27;
-            this.testLabel.Text = "label3";
-            // 
             // btn_prc_add
             // 
             this.btn_prc_add.Enabled = false;
-            this.btn_prc_add.Location = new System.Drawing.Point(514, 271);
+            this.btn_prc_add.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_prc_add.Location = new System.Drawing.Point(652, 251);
             this.btn_prc_add.Margin = new System.Windows.Forms.Padding(2);
             this.btn_prc_add.Name = "btn_prc_add";
-            this.btn_prc_add.Size = new System.Drawing.Size(116, 24);
+            this.btn_prc_add.Size = new System.Drawing.Size(140, 46);
             this.btn_prc_add.TabIndex = 29;
             this.btn_prc_add.Text = "ADD PROCESS";
             this.btn_prc_add.UseVisualStyleBackColor = true;
             this.btn_prc_add.Click += new System.EventHandler(this.btn_prc_add_Click);
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(577, 167);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(27, 37);
-            this.label3.TabIndex = 30;
-            this.label3.Text = " ";
-            // 
-            // processBindingSource
-            // 
-            this.processBindingSource.DataSource = typeof(ProjectOS2.Process);
-            // 
-            // processPriorityBindingSource
-            // 
-            this.processPriorityBindingSource.DataSource = typeof(ProjectOS2.ProcessPriority);
             // 
             // button1
             // 
@@ -360,15 +333,33 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.Red;
+            this.label3.Location = new System.Drawing.Point(509, 189);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(26, 38);
+            this.label3.TabIndex = 32;
+            this.label3.Text = " ";
+            // 
+            // processBindingSource
+            // 
+            this.processBindingSource.DataSource = typeof(ProjectOS2.Process);
+            // 
+            // processPriorityBindingSource
+            // 
+            this.processPriorityBindingSource.DataSource = typeof(ProjectOS2.ProcessPriority);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(962, 589);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btn_prc_add);
-            this.Controls.Add(this.testLabel);
             this.Controls.Add(this.btn_rmv);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.txtConsole);
@@ -428,13 +419,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Process;
         private System.Windows.Forms.DataGridViewTextBoxColumn ArrivalTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProcessingTime;
-        private System.Windows.Forms.Label testLabel;
         public System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.RadioButton rdn_instant;
         public System.Windows.Forms.RadioButton rdn_live;
         private System.Windows.Forms.Button btn_prc_add;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label3;
     }
 }
 

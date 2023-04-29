@@ -63,7 +63,7 @@ namespace ProjectOS2
         private async void button2_Click2(object sender, EventArgs e)
         {
             mainForm.setTimer(0);
-            button2.Enabled = false;
+            
             while(true)
             {
                 timer = mainForm.getTimer();
@@ -143,6 +143,7 @@ namespace ProjectOS2
         public async void drawChartLive(List<Process> sortedList)
         {
             button3.Visible = true;
+            button2.Enabled = false;
             // Chart chart = new Chart();
             // chart.Anchor = AnchorStyles.Left & AnchorStyles.Right & AnchorStyles.Bottom & AnchorStyles.Top;
             // chart.Dock = DockStyle.Top;

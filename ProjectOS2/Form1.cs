@@ -1484,7 +1484,7 @@ namespace ProjectOS2
                     }
                     testTimer++;
                     comboBox.SuspendLayout();
-                    testLabel.Text = testTimer.ToString();
+                    //testLabel.Text = testTimer.ToString();
                     await Task.Delay(1000);
                     // comboBox.ResumeLayout();
                 }
