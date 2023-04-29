@@ -677,6 +677,7 @@ namespace ProjectOS2
         //non preemp prio
         public static List<Process> sorted = new List<Process>();
         public static List<Process> preready = new List<Process>();
+        public static int currentTime;
         public static int endOfBurst;
         
         public static List<Process> SortByArrival(List<Process> listOFProcesses)
